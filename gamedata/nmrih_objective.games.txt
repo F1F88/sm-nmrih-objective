@@ -1,0 +1,273 @@
+"Games"
+{
+    "nmrih"
+    {
+        "Addresses"
+        {
+            // By Dysphie https://github.com/dysphie/nmo-guard
+            "CNMRiH_ObjectiveManager"
+            {
+                "windows"
+                {
+                    "signature"     "ObjectivesParser::ParseObjectives"
+                    "read"          "10"
+                }
+
+                "linux"
+                {
+                    "signature"     "g_ObjectiveManager"
+                }
+            }
+
+            "g_pEntityList"
+            {
+                "linux"
+                {
+                    "signature"     "g_pEntityList"
+                }
+            }
+        }
+
+        "Offsets"
+        {
+            /*** ----- General ----- ***/
+            "OS"
+            {
+                "windows"   "0"
+                "linux"     "1"
+                "mac"       "2"
+            }
+
+            /*** ----- CNMRiH_Objective ----- ***/
+            // By Dysphie https://github.com/dysphie/nmo-guard
+            "CNMRiH_Objective::m_iId"
+            {
+                "windows"   "0"
+                "linux"     "0"
+            }
+
+            "CNMRiH_Objective::_sName"
+            {
+                "windows"   "4"
+                "linux"     "4"
+            }
+
+            "CNMRiH_Objective::_sDescription"
+            {
+                "windows"   "8"
+                "linux"     "8"
+            }
+
+            "CNMRiH_Objective::_pEntitysVector"
+            {
+                "windows"   "12"
+                "linux"     "12"
+            }
+
+            "CNMRiH_Objective::_iEntitysCount"
+            {
+                "windows"   "24"
+                "linux"     "24"
+            }
+
+            "CNMRiH_Objective::_pLinksVector"
+            {
+                "windows"   "32"
+                "linux"     "32"
+            }
+
+            "CNMRiH_Objective::_iLinksCount"
+            {
+                "windows"   "44"
+                "linux"     "44"
+            }
+
+            "CNMRiH_Objective::_bIsAntiObjective"
+            {
+                "windows"   "52"
+                "linux"     "52"
+            }
+
+            "CNMRiH_Objective::_sObjectiveBoundaryName"
+            {
+                "windows"   "56"
+                "linux"     "56"
+            }
+
+            /*** ----- CNMRiH_ObjectiveManager ----- ***/
+            "CNMRiH_ObjectiveManager::_pObjectivesVector"
+            {
+                "windows"   "20"
+                "linux"     "20"
+            }
+
+            "CNMRiH_ObjectiveManager::_iObjectivesCount"
+            {
+                "windows"   "32"
+                "linux"     "32"
+            }
+
+            // * 暂时用不到, 逆向工程里也没有提供相关的 API
+            // "CNMRiH_ObjectiveManager::_pAntiObjectiveVector"
+            // {
+            //     "windows"   "40"
+            //     "linux"     "40"
+            // }
+
+            // "CNMRiH_ObjectiveManager::_iAntiObjectiveCount"
+            // {
+            //     "windows"   "52"
+            //     "linux"     "52"
+            // }
+
+            // "CNMRiH_ObjectiveManager::_pExtractionRBTree"
+            // {
+            //     "windows"   "60"
+            //     "linux"     "60"
+            // }
+
+            // By Dysphie https://github.com/dysphie/nmo-guard
+            "CNMRiH_ObjectiveManager::_pObjectiveChainVector"
+            {
+                "windows"   "88"
+                "linux"     "88"
+            }
+
+            "CNMRiH_ObjectiveManager::_iObjectiveChainCount"
+            {
+                "windows"   "100"
+                "linux"     "100"
+            }
+
+            "CNMRiH_ObjectiveManager::_bIsCompleted"
+            {
+                "windows"   "108"
+                "linux"     "108"
+            }
+
+            "CNMRiH_ObjectiveManager::_bIsFailed"
+            {
+                "windows"   "109"
+                "linux"     "109"
+            }
+
+            // 110 - _bIsRunning ?
+
+            "CNMRiH_ObjectiveManager::_iCurrentObjectiveIndex"
+            {
+                "windows"   "112"
+                "linux"     "112"
+            }
+
+            "CNMRiH_ObjectiveManager::_sCurrentObjectiveBoundary"
+            {
+                "windows"   "116"
+                "linux"     "116"
+            }
+
+            // By Dysphie https://github.com/dysphie/nmo-guard
+            "CNMRiH_ObjectiveManager::_pCurrentObjective"
+            {
+                "windows"   "120"
+                "linux"     "120"
+            }
+
+            // By Dysphie https://github.com/dysphie/nmo-guard
+            // "CNMRiH_ObjectiveManager::_pCurrentObjectiveBoundary"
+            // {
+            //     "windows"   "124"
+            //     "linux"     "124"
+            // }
+        }
+
+        "Signatures"
+        {
+            /*** ----- CNMRiH_Objective ----- ***/
+            "CNMRiH_Objective::GetObjectiveBoundary"
+            {
+                "library"   "server"
+                "windows"   "\x55\x8B\xEC\x51\x53\x8B\x1D\x2A\x2A\x2A\x2A\x56\x57\x8B\xF9\x33\xF6"
+                "linux"     "@_ZNK16CNMRiH_Objective20GetObjectiveBoundaryEv"
+            }
+
+            /*** ----- CNMRiH_ObjectiveBoundary ----- ***/
+            // "CNMRiH_ObjectiveBoundary::Start"
+            // {
+            //     "library"   "server"
+            //     // "windows"   "" // TODO
+            //     "linux"     "@_ZN24CNMRiH_ObjectiveBoundary5StartEv"
+            // }
+
+            // By Dysphie https://github.com/dysphie/nmo-guard
+            "CNMRiH_ObjectiveBoundary::Finish"
+            {
+                "library"   "server"
+                "windows"   "\x55\x8B\xEC\x51\x56\x57\x8B\xF9\xC6\x45\xFF\x00\x8D\x4D\xFF\x8A\x87\xCC\x03\x00\x00"
+                "linux"     "@_ZN24CNMRiH_ObjectiveBoundary6FinishEv"
+            }
+
+
+            /*** ----- CNMRiH_ObjectiveManager ----- ***/
+            // By Dysphie https://github.com/dysphie/nmrih-objectivefinish-crash-fix
+            "CNMRiH_ObjectiveManager::CompleteCurrentObjective"
+            {
+                "library"   "server"
+                "windows"   "\x55\x8B\xEC\x51\x56\x57\x8B\xF9\x8B\x0D\x2A\x2A\x2A\x2A"
+                "linux"     "@_ZN23CNMRiH_ObjectiveManager24CompleteCurrentObjectiveE8string_t"
+            }
+
+            "CNMRiH_ObjectiveManager::GetObjectiveById"
+            {
+                "library"   "server"
+                "windows"   "\x55\x8B\xEC\x56\x8B\x71\x20"
+                "linux"     "@_ZNK23CNMRiH_ObjectiveManager16GetObjectiveByIdEi"
+            }
+
+            // * Note: 由于找不到 windows sig, 所以用 sp 代码模拟原函数逻辑来实现
+            // "CNMRiH_ObjectiveManager::GetObjectiveByIndex"
+            // {
+            //     "library"   "server"
+            //     // "windows"   ""
+            //     "linux"     "@_ZNK23CNMRiH_ObjectiveManager19GetObjectiveByIndexEi"
+            // }
+
+            "CNMRiH_ObjectiveManager::GetObjectiveByName"
+            {
+                "library"   "server"
+                "windows"   "\x55\x8B\xEC\x83\xEC\x08\x53\x8B\xD9\x56\x33\xF6\x57\x39\x73\x20"
+                "linux"     "@_ZNK23CNMRiH_ObjectiveManager18GetObjectiveByNameE8string_t"
+            }
+
+            // By Dysphie https://github.com/dysphie/nmo-guard
+            "CNMRiH_ObjectiveManager::StartNextObjective"
+            {
+                "library"   "server"
+                "windows"   "\x55\x8B\xEC\x83\xEC\x2C\x53\x56\x57\x8B\xF9\x89\x7D\xF8"
+                "linux"     "@_ZN23CNMRiH_ObjectiveManager18StartNextObjectiveEv"
+            }
+
+            // By Dysphie https://github.com/dysphie/nmo-guard
+            // Used to find g_ObjectiveManager on Windows.
+            "ObjectivesParser::ParseObjectives"
+            {
+                "library"   "server"
+                "windows"   "\x55\x8B\xEC\x81\xEC\x40\x02\x00\x00\xB9\x2A\x2A\x2A\x2A"
+                "linux"     "@_ZN17CObjectivesParser15ParseObjectivesEPKc" // * Note: 此插件不需要
+            }
+
+            // By Dysphie https://github.com/dysphie/nmo-guard
+            // Used to find g_ObjectiveManager on Linux.
+            "g_ObjectiveManager"
+            {
+                "library"   "server"
+                "linux"     "@g_ObjectiveManager"
+            }
+
+            "g_pEntityList"
+            {
+                "library"   "server"
+                "linux"     "@gEntList"
+            }
+        }
+    }
+}
