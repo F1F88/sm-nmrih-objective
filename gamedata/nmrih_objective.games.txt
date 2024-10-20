@@ -159,25 +159,12 @@
                 "linux"     "112"
             }
 
-            "CNMRiH_ObjectiveManager::_sCurrentObjectiveBoundary"
-            {
-                "windows"   "116"
-                "linux"     "116"
-            }
-
             // By Dysphie https://github.com/dysphie/nmo-guard
             "CNMRiH_ObjectiveManager::_pCurrentObjective"
             {
                 "windows"   "120"
                 "linux"     "120"
             }
-
-            // By Dysphie https://github.com/dysphie/nmo-guard
-            // "CNMRiH_ObjectiveManager::_pCurrentObjectiveBoundary"
-            // {
-            //     "windows"   "124"
-            //     "linux"     "124"
-            // }
         }
 
         "Signatures"

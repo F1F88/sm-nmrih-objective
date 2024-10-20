@@ -91,8 +91,14 @@ methodmap Objective < AddressBase
 
     public native bool IsAntiObjective();
 
+    /**
+     * Returns name of the current objective boundary.
+     */
     public native void GetObjectiveBoundaryName(char[] buffer, int maxlen);
 
+    /**
+     * Returns entity handle to current objective boundary.
+     */
     public native ObjectiveBoundary GetObjectiveBoundary();
 }
 
@@ -171,22 +177,11 @@ methodmap ObjectiveManager < AddressBase
         public native set(int value);
     }
 
-    property Stringt _sCurrentObjectiveBoundary
-    {
-        public native get();
-    }
-
     property Objective _pCurrentObjective
     {
         public native get();
         public native set(Objective value);
     }
-
-    // property ObjectiveBoundary _pCurrentObjectiveBoundary
-    // {
-    //     public native get();
-    //     public native set(ObjectiveBoundary value);
-    // }
 
     /**
      * Completes current objective, with targetname parameter of forced extraction zone.
@@ -194,11 +189,31 @@ methodmap ObjectiveManager < AddressBase
     public native void CompleteCurrentObjective(const char[] targetname);
 
     /**
-     * Returns name of current objective boundary.
-     * ref: https://github.com/nmrih/source-game/issues/1495
+     * Returns current objective instance.
      */
-    #pragma deprecated Because it's non-functional.
-    public native void GetCurrentObjectiveBoundary(char[] buffer, int maxlen);
+    public Objective GetCurrentObjective()
+    {
+        // 参考自 CNMRiH_ObjectiveManager::ScriptGetObjectiveByIndex 的逆向
+        int index = this._iCurrentObjectiveIndex;
+        int len = this._iObjectivesCount;
+        if (index < 0 || index >= len)
+        {
+            ThrowError("Invalid objective index (%d) [0-%d].", index, len);
+        }
+
+        UtlVector chain = this._pObjectiveChainVector;
+        if (chain.addr == Address_Null)
+        {
+            ThrowError("Invalid objective chain instance.");
+        }
+
+        Objective result = chain.Get(index);
+        if (result.addr == Address_Null)
+        {
+            ThrowError("Invalid objective instance.");
+        }
+        return result;
+    }
 
     /**
      * Returns current objective index.

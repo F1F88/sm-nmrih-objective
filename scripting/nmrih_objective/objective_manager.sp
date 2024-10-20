@@ -12,7 +12,6 @@ enum    // Offset
     OFS_ObjectiveManager__bIsCompleted,
     OFS_ObjectiveManager__bIsFailed,
     OFS_ObjectiveManager__iCurrentObjectiveIndex,
-    OFS_ObjectiveManager__sCurrentObjectiveBoundary,
     OFS_ObjectiveManager__pCurrentObjective,
     OFS_ObjectiveManager_Total
 };
@@ -45,11 +44,9 @@ void LoadObjectiveManagerNative()
     CreateNative("ObjectiveManager._bIsFailed.set", Native_ObjectiveManager_Set__bIsFailed);
     CreateNative("ObjectiveManager._iCurrentObjectiveIndex.get", Native_ObjectiveManager_Get__iCurrentObjectiveIndex);
     CreateNative("ObjectiveManager._iCurrentObjectiveIndex.set", Native_ObjectiveManager_Set__iCurrentObjectiveIndex);
-    CreateNative("ObjectiveManager._sCurrentObjectiveBoundary.get", Native_ObjectiveManager_Get__sCurrentObjectiveBoundary);
     CreateNative("ObjectiveManager._pCurrentObjective.get", Native_ObjectiveManager_Get__pCurrentObjective);
     CreateNative("ObjectiveManager._pCurrentObjective.set", Native_ObjectiveManager_Set__pCurrentObjective);
     CreateNative("ObjectiveManager.CompleteCurrentObjective", Native_ObjectiveManager_CompleteCurrentObjective);
-    CreateNative("ObjectiveManager.GetCurrentObjectiveBoundary", Native_ObjectiveManager_GetCurrentObjectiveBoundary);
     CreateNative("ObjectiveManager.GetCurrentObjectiveIndex", Native_ObjectiveManager_GetCurrentObjectiveIndex);
     CreateNative("ObjectiveManager.GetObjectiveById", Native_ObjectiveManager_GetObjectiveById);
     CreateNative("ObjectiveManager.GetObjectiveByIndex", Native_ObjectiveManager_GetObjectiveByIndex);
@@ -80,7 +77,6 @@ void LoadObjectiveManagerOffset(GameData gamedata)
     LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_bIsCompleted", OFS_ObjectiveManager__bIsCompleted);
     LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_bIsFailed", OFS_ObjectiveManager__bIsFailed);
     LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_iCurrentObjectiveIndex", OFS_ObjectiveManager__iCurrentObjectiveIndex);
-    LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_sCurrentObjectiveBoundary", OFS_ObjectiveManager__sCurrentObjectiveBoundary);
     LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_pCurrentObjective", OFS_ObjectiveManager__pCurrentObjective);
 }
 
@@ -236,15 +232,6 @@ static any Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, in
     return true;
 }
 
-static any Native_ObjectiveManager_Get__sCurrentObjectiveBoundary(Handle plugin, int numParams)
-{
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
-
-    return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__sCurrentObjectiveBoundary], NumberType_Int32);
-}
-
 static any Native_ObjectiveManager_Get__pCurrentObjective(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
@@ -277,23 +264,6 @@ static any Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int n
     GetNativeString(2, targetname, maxlen); // 读取传入的字符串
 
     return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], objectiveManager.addr, targetname);
-}
-
-static any Native_ObjectiveManager_GetCurrentObjectiveBoundary(Handle plugin, int numParams)
-{
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    Stringt currentObjectiveBoundary = objectiveManager._sCurrentObjectiveBoundary;
-    if (!currentObjectiveBoundary) // 非任务进行时
-    {
-        SetNativeString(2, "", 1);
-        return false;
-    }
-
-    int     maxlen = GetNativeCell(3);
-    char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-    currentObjectiveBoundary.ToCharArray(buffer, maxlen);
-    SetNativeString(2, buffer, maxlen);
-    return true;
 }
 
 static any Native_ObjectiveManager_GetCurrentObjectiveIndex(Handle plugin, int numParams)
