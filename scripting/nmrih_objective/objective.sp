@@ -70,7 +70,7 @@ void LoadObjectiveOffset(GameData gamedata)
 
 static void LoadOffset(GameData gamedata, const char[] key, int index)
 {
-    if (index < 0 || index >= OFS_ObjectiveManager_Total)
+    if (index < 0 || index >= OFS_Objective_Total)
         SetFailState("Invalid iObjectiveOffset index %d", index);
 
     int offset = gamedata.GetOffset(key);
