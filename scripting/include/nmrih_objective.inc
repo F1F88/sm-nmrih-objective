@@ -243,7 +243,7 @@ methodmap ObjectiveManager < AddressBase
      * @note The ArrayList element type is Objective.
      * @note 实际返回的 ArrayList 元素个数可能是 GetObjectiveChainCount - 1
      */
-    public native void GetObjectiveChain(ArrayList objectiveChain);
+    public native ArrayList GetObjectiveChain();
 
     /**
      * Returns current objective chain element count.

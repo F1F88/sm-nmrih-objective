@@ -9,7 +9,7 @@
 
 #define PLUGIN_NAME        "NMRIH Objective Utils"
 #define PLUGIN_DESCRIPTION "No More Room In Hell objective utils"
-#define PLUGIN_VERSION     "1.1.1"
+#define PLUGIN_VERSION     "1.2.0"
 
 public Plugin myinfo =
 {

@@ -25,9 +25,9 @@ void LoadObjectiveBoundarySignature(GameData gamedata)
     //     SetFailState("Failed to load signature CNMRiH_ObjectiveBoundary::Start");
 
     StartPrepSDKCall(SDKCall_Raw);
-    PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveBoundary::Finish");
+    PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveBoundary::Finish.");
     if ((hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Finish] = EndPrepSDKCall()) == null)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveBoundary::Finish");
+        SetFailState("Failed to load signature CNMRiH_ObjectiveBoundary::Finish.");
 }
 
 
@@ -43,8 +43,8 @@ void LoadObjectiveBoundarySignature(GameData gamedata)
 static any Native_ObjectiveBoundary_Finish(Handle plugin, int numParams)
 {
     ObjectiveBoundary objectiveBoundary = GetNativeCell(1);
-    if (!objectiveBoundary)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective boundary 0x%x", objectiveBoundary);
+    if (objectiveBoundary.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveBoundary instance is null.");
 
     return SDKCall(hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Finish], objectiveBoundary.addr);
 }

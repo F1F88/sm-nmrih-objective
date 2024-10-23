@@ -63,7 +63,7 @@ void LoadObjectiveManagerAddress(GameData gamedata)
 {
     ObjectiveManagerAddress = gamedata.GetAddress("CNMRiH_ObjectiveManager");
     if (!ObjectiveManagerAddress)
-        SetFailState("Failed to load address CNMRiH_ObjectiveManager");
+        SetFailState("Failed to load address CNMRiH_ObjectiveManager.");
 }
 
 void LoadObjectiveManagerOffset(GameData gamedata)
@@ -83,11 +83,11 @@ void LoadObjectiveManagerOffset(GameData gamedata)
 static void LoadOffset(GameData gamedata, const char[] key, int index)
 {
     if (index <0 || index >= OFS_ObjectiveManager_Total)
-        SetFailState("Invalid iObjectiveManagerOffset index %d", index);
+        SetFailState("Invalid iObjectiveManagerOffset index %d.", index);
 
     int offset = gamedata.GetOffset(key);
     if (offset == -1)
-        SetFailState("Failed to load offset %s", key);
+        SetFailState("Failed to load offset %s.", key);
 
     iObjectiveManagerOffset[index] = offset;
 }
@@ -98,14 +98,14 @@ void LoadObjectiveManagerSignature(GameData gamedata)
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::CompleteCurrentObjective");
     PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::CompleteCurrentObjective");
+        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::CompleteCurrentObjective.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::GetObjectiveById");
     PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
     PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveById] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveById");
+        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveById.");
 
     // StartPrepSDKCall(SDKCall_Raw);
     // PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::GetObjectiveByIndex");
@@ -119,19 +119,19 @@ void LoadObjectiveManagerSignature(GameData gamedata)
     PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
     PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByName] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveByName");
+        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveByName.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::StartNextObjective");
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::StartNextObjective");
+        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::StartNextObjective.");
 }
 
 
 static any Native_ObjectiveManager_Instance(Handle plugin, int numParams)
 {
-    if (!ObjectiveManagerAddress)
-        ThrowNativeError(SP_ERROR_NATIVE, "Invalid objective manager 0x%x", ObjectiveManagerAddress);
+    if (ObjectiveManagerAddress == Address_Null)
+        ThrowNativeError(SP_ERROR_NATIVE, "ObjectiveManager instance is null.");
 
     return view_as<ObjectiveManager>(ObjectiveManagerAddress);
 }
@@ -139,8 +139,8 @@ static any Native_ObjectiveManager_Instance(Handle plugin, int numParams)
 static any Native_ObjectiveManager_Get__pObjectivesVector(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return UtlVector(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pObjectivesVector]);
 }
@@ -148,8 +148,8 @@ static any Native_ObjectiveManager_Get__pObjectivesVector(Handle plugin, int num
 static any Native_ObjectiveManager_Get__iObjectivesCount(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iObjectivesCount], NumberType_Int32);
 }
@@ -157,8 +157,8 @@ static any Native_ObjectiveManager_Get__iObjectivesCount(Handle plugin, int numP
 static any Native_ObjectiveManager_Get__pObjectiveChainVector(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return UtlVector(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pObjectiveChainVector]);
 }
@@ -166,8 +166,8 @@ static any Native_ObjectiveManager_Get__pObjectiveChainVector(Handle plugin, int
 static any Native_ObjectiveManager_Get__iObjectiveChainCount(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iObjectiveChainCount], NumberType_Int32);
 }
@@ -175,8 +175,8 @@ static any Native_ObjectiveManager_Get__iObjectiveChainCount(Handle plugin, int 
 static any Native_ObjectiveManager_Get__bIsCompleted(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsCompleted], NumberType_Int8);
 }
@@ -184,8 +184,8 @@ static any Native_ObjectiveManager_Get__bIsCompleted(Handle plugin, int numParam
 static any Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     bool value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsCompleted], value, NumberType_Int8);
@@ -195,8 +195,8 @@ static any Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numParam
 static any Native_ObjectiveManager_Get__bIsFailed(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsFailed], NumberType_Int8);
 }
@@ -204,8 +204,8 @@ static any Native_ObjectiveManager_Get__bIsFailed(Handle plugin, int numParams)
 static any Native_ObjectiveManager_Set__bIsFailed(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     bool value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsFailed], value, NumberType_Int8);
@@ -215,8 +215,8 @@ static any Native_ObjectiveManager_Set__bIsFailed(Handle plugin, int numParams)
 static any Native_ObjectiveManager_Get__iCurrentObjectiveIndex(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iCurrentObjectiveIndex], NumberType_Int32);
 }
@@ -224,8 +224,8 @@ static any Native_ObjectiveManager_Get__iCurrentObjectiveIndex(Handle plugin, in
 static any Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     int value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iCurrentObjectiveIndex], value, NumberType_Int32);
@@ -235,8 +235,8 @@ static any Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, in
 static any Native_ObjectiveManager_Get__pCurrentObjective(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pCurrentObjective], NumberType_Int32);
 }
@@ -244,8 +244,8 @@ static any Native_ObjectiveManager_Get__pCurrentObjective(Handle plugin, int num
 static any Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     Objective value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pCurrentObjective], value, NumberType_Int32);
@@ -255,8 +255,8 @@ static any Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int num
 static any Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     int maxlen;
     GetNativeStringLength(2, maxlen);       // 获取传入的字符串长度
@@ -269,14 +269,17 @@ static any Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int n
 static any Native_ObjectiveManager_GetCurrentObjectiveIndex(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+
     return objectiveManager._iCurrentObjectiveIndex;
 }
 
 static any Native_ObjectiveManager_GetObjectiveById(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     int id = GetNativeCell(2);
     return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveById], objectiveManager.addr, id);
@@ -285,9 +288,12 @@ static any Native_ObjectiveManager_GetObjectiveById(Handle plugin, int numParams
 static any Native_ObjectiveManager_GetObjectiveByIndex(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+
     UtlVector objectiveVector = objectiveManager._pObjectivesVector;
-    if (!objectiveVector)
-        ThrowNativeError(SP_ERROR_NATIVE, "Invalid objectiv vector 0x%x", objectiveVector);
+    if (objectiveVector.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
 
     int index = GetNativeCell(2);
     return objectiveVector.Get(index); // UtlVector 会检查 index
@@ -296,8 +302,8 @@ static any Native_ObjectiveManager_GetObjectiveByIndex(Handle plugin, int numPar
 static any Native_ObjectiveManager_GetObjectiveByName(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     int maxlen;
     GetNativeStringLength(2, maxlen); // 获取传入的字符串长度
@@ -310,17 +316,15 @@ static any Native_ObjectiveManager_GetObjectiveByName(Handle plugin, int numPara
 static any Native_ObjectiveManager_GetObjectiveChain(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    ArrayList objectiveChain = GetNativeCell(2);
-    if (!objectiveChain)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objectiveChain handle 0x%x", objectiveChain);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     UtlVector objectiveChainVector = objectiveManager._pObjectiveChainVector;
-    if (!objectiveChainVector)
-        return false;
+    if (objectiveChainVector.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
 
     int objectiveChainCount = objectiveChainVector.size;
-    if (objectiveChainCount <= 0)
-        return false;
+    ArrayList objectiveChain = new ArrayList();
 
     for (int i=0; i < objectiveChainCount; ++i)
     {
@@ -331,38 +335,50 @@ static any Native_ObjectiveManager_GetObjectiveChain(Handle plugin, int numParam
             objectiveChain.Push(objectiveById);
         }
     }
-    return true;
+    return objectiveChain;
 }
 
 static any Native_ObjectiveManager_GetObjectiveChainCount(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+
     return objectiveManager._iObjectiveChainCount;
 }
 
 static any Native_ObjectiveManager_GetObjectiveCount(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+
     return objectiveManager._iObjectivesCount;
 }
 
 static any Native_ObjectiveManager_IsCompleted(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+
     return objectiveManager._bIsCompleted;
 }
 
 static any Native_ObjectiveManager_IsFailed(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+
     return objectiveManager._bIsFailed;
 }
 
 static any Native_ObjectiveManager_StartNextObjective(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (!objectiveManager)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid objective manager 0x%x", objectiveManager);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective], objectiveManager.addr);
 }
