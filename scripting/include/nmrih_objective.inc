@@ -245,7 +245,7 @@ methodmap ObjectiveManager < AddressBase
      * CompleteCurrentObjective completes the current objective and optionally sets a forced extraction zone.
      * @param targetname    (forcedExtractZone) The name of the extraction zone to use, or "" for none.
      */
-    public native void CompleteCurrentObjective(const char[] targetname = NULL_STRING);
+    public static native void CompleteCurrentObjective(const char[] targetname = NULL_STRING);
 
     /**
      * Returns the ObjectiveBoundary object of the current objective, or null if there is none.
@@ -274,17 +274,18 @@ methodmap ObjectiveManager < AddressBase
     /**
      * Returns current objective instance.
      */
-    public Objective GetCurrentObjective()
+    public static Objective GetCurrentObjective()
     {
         // 参考自 CNMRiH_ObjectiveManager::ScriptGetObjectiveByIndex 的逆向
-        int index = this._iCurrentObjectiveIndex;
-        int len = this._iObjectivesCount;
+        ObjectiveManager objectiveManager = ObjectiveManager.Instance();
+        int index = objectiveManager._iCurrentObjectiveIndex;
+        int len = objectiveManager._iObjectivesCount;
         if (index < 0 || index >= len)
         {
             ThrowError("Invalid objective index (%d) [0-%d].", index, len);
         }
 
-        UtlVector chain = this._pObjectiveChainVector;
+        UtlVector chain = objectiveManager._pObjectiveChainVector;
         if (chain.addr == Address_Null)
         {
             ThrowError("Invalid objective chain instance.");
@@ -301,7 +302,7 @@ methodmap ObjectiveManager < AddressBase
     /**
      * Returns current objective index.
      */
-    public native int GetCurrentObjectiveIndex();
+    public static native int GetCurrentObjectiveIndex();
 
     /**
      * Returns objective instance by ID.
@@ -310,7 +311,7 @@ methodmap ObjectiveManager < AddressBase
      * @return An Objective object or null.
      * @param id The id of the objective to get.
      */
-    public native Objective GetObjectiveById(int id);
+    public static native Objective GetObjectiveById(int id);
 
     /**
      * Returns objective instance by index.
@@ -320,7 +321,7 @@ methodmap ObjectiveManager < AddressBase
      * @return An Objective object or null.
      * @error       Invalid index.
      */
-    public native Objective GetObjectiveByIndex(int index);
+    public static native Objective GetObjectiveByIndex(int index);
 
     /**
      * Returns objective instance by name.
@@ -329,7 +330,7 @@ methodmap ObjectiveManager < AddressBase
      * @param name The name of the objective to get.
      * @return An Objective object or null.
      */
-    public native Objective GetObjectiveByName(const char[] name);
+    public static native Objective GetObjectiveByName(const char[] name);
 
     /**
      * Fills array with current objective chain.
@@ -337,7 +338,7 @@ methodmap ObjectiveManager < AddressBase
      * @note The ArrayList element type is Objective.
      * @note 实际返回的 ArrayList 元素个数可能是 GetObjectiveChainCount - 1
      */
-    public native ArrayList GetObjectiveChain();
+    public static native ArrayList GetObjectiveChain();
 
     /**
      * Returns current objective chain element count.
@@ -345,12 +346,12 @@ methodmap ObjectiveManager < AddressBase
      * @note 可能还包含一个撤离任务, 总之无法将最后一个 id 转换成对应的 objective,
      *       所以 chain ArrayList 中的元素会缺少这一个.
      */
-    public native int GetObjectiveChainCount();
+    public static native int GetObjectiveChainCount();
 
     /**
      * Returns total objective count.
      */
-    public native int GetObjectiveCount();
+    public static native int GetObjectiveCount();
 
     /**
      * Returns true if objectives are complete.
@@ -358,7 +359,7 @@ methodmap ObjectiveManager < AddressBase
      * IsCompleted returns true if all the objectives are completed, false otherwise.
      * @return A bool value indicating if all the objectives are completed.
      */
-    public native bool IsCompleted();
+    public static native bool IsCompleted();
 
     /**
      * Returns true if objectives failed.
@@ -366,14 +367,14 @@ methodmap ObjectiveManager < AddressBase
      * IsFailed returns true if any of the objectives are failed, false otherwise.
      * @return A bool value indicating if any of the objectives are failed.
      */
-    public native bool IsFailed();
+    public static native bool IsFailed();
 
     /**
      * Starts next objective on the chain.
      *
      * StartNextObjective starts the next objective in the list, if there is any.
      */
-	public native void StartNextObjective();
+	public static native void StartNextObjective();
 
     // TODO
     /**

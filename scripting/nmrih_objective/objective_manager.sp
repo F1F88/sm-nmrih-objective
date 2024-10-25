@@ -247,44 +247,28 @@ static void Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int nu
 
 static void Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
     int maxlen;
-    GetNativeStringLength(2, maxlen);       // 获取传入的字符串长度
+    GetNativeStringLength(1, maxlen);       // 获取传入的字符串长度
     char[] targetname = new char[++maxlen]; // 需要增加一位用于存储 '\0'
-    GetNativeString(2, targetname, maxlen); // 读取传入的字符串
+    GetNativeString(1, targetname, maxlen); // 读取传入的字符串
 
-    SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], objectiveManager.addr, targetname);
+    SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], g_pObjectiveManager, targetname);
 }
 
 static any Native_ObjectiveManager_GetCurrentObjectiveIndex(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
-    return objectiveManager._iCurrentObjectiveIndex;
+    return ObjectiveManager.Instance()._iCurrentObjectiveIndex;
 }
 
 static any Native_ObjectiveManager_GetObjectiveById(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
-    int id = GetNativeCell(2);
-    return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveById], objectiveManager.addr, id);
+    int id = GetNativeCell(1);
+    return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveById], g_pObjectiveManager, id);
 }
 
 static any Native_ObjectiveManager_GetObjectiveByIndex(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
-    UtlVector objectiveVector = objectiveManager._pObjectivesVector;
+    UtlVector objectiveVector = ObjectiveManager.Instance()._pObjectivesVector;
     if (objectiveVector.IsNull())
         ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
 
@@ -294,25 +278,17 @@ static any Native_ObjectiveManager_GetObjectiveByIndex(Handle plugin, int numPar
 
 static any Native_ObjectiveManager_GetObjectiveByName(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
     int maxlen;
-    GetNativeStringLength(2, maxlen); // 获取传入的字符串长度
+    GetNativeStringLength(1, maxlen); // 获取传入的字符串长度
     char[] name = new char[++maxlen]; // 需要增加一位用于存储 '\0'
-    GetNativeString(2, name, maxlen);
+    GetNativeString(1, name, maxlen);
 
-    return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByName], objectiveManager.addr, name);
+    return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByName], g_pObjectiveManager, name);
 }
 
 static any Native_ObjectiveManager_GetObjectiveChain(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
-    UtlVector objectiveChainVector = objectiveManager._pObjectiveChainVector;
+    UtlVector objectiveChainVector = ObjectiveManager.Instance()._pObjectiveChainVector;
     if (objectiveChainVector.IsNull())
         ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
 
@@ -322,7 +298,7 @@ static any Native_ObjectiveManager_GetObjectiveChain(Handle plugin, int numParam
     for (int i=0; i < objectiveChainCount; ++i)
     {
         int id = objectiveChainVector.Get(i);
-        Objective objectiveById = objectiveManager.GetObjectiveById(id);
+        Objective objectiveById = ObjectiveManager.GetObjectiveById(id);
         if (objectiveById)
         {
             objectiveChain.Push(objectiveById);
@@ -333,45 +309,25 @@ static any Native_ObjectiveManager_GetObjectiveChain(Handle plugin, int numParam
 
 static any Native_ObjectiveManager_GetObjectiveChainCount(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
-    return objectiveManager._iObjectiveChainCount;
+    return ObjectiveManager.Instance()._iObjectiveChainCount;
 }
 
 static any Native_ObjectiveManager_GetObjectiveCount(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
-    return objectiveManager._iObjectivesCount;
+    return ObjectiveManager.Instance()._iObjectivesCount;
 }
 
 static any Native_ObjectiveManager_IsCompleted(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
-    return objectiveManager._bIsCompleted;
+    return ObjectiveManager.Instance()._bIsCompleted;
 }
 
 static any Native_ObjectiveManager_IsFailed(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
-    return objectiveManager._bIsFailed;
+    return ObjectiveManager.Instance()._bIsFailed;
 }
 
 static void Native_ObjectiveManager_StartNextObjective(Handle plugin, int numParams)
 {
-    ObjectiveManager objectiveManager = GetNativeCell(1);
-    if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
-
-    SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective], objectiveManager.addr);
+    SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective], g_pObjectiveManager);
 }
