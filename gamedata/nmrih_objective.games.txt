@@ -218,6 +218,13 @@
                 "linux"     "@_ZN23CNMRiH_ObjectiveManager5ClearEv"
             }
 
+            "CNMRiH_ObjectiveManager::Finish"
+            {
+                "library"   "server"
+                // "windows"   "" // TODO
+                "linux"     "@_ZN23CNMRiH_ObjectiveManager6FinishEv"
+            }
+
             "CNMRiH_ObjectiveManager::GetObjectiveById"
             {
                 "library"   "server"

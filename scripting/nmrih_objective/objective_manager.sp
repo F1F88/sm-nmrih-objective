@@ -20,6 +20,7 @@ enum    // Signature
 {
     HDL_ObjectiveManager_CompleteCurrentObjective,
     HDL_ObjectiveManager_Clear,
+    HDL_ObjectiveManager_Finish,
     HDL_ObjectiveManager_GetObjectiveById,
     // HDL_ObjectiveManager_GetObjectiveByIndex, // * Note: 由于找不到 windows sig, 所以改用 sp 模拟内部逻辑来实现
     HDL_ObjectiveManager_GetObjectiveByName,
@@ -51,6 +52,7 @@ void LoadObjectiveManagerNative()
     CreateNative("ObjectiveManager.CompleteCurrentObjective", Native_ObjectiveManager_CompleteCurrentObjective);
     CreateNative("ObjectiveManager.GetCurrentObjectiveBoundary", Native_ObjectiveManager_GetCurrentObjectiveBoundary);
     CreateNative("ObjectiveManager.Clear", Native_ObjectiveManager_Clear);
+    CreateNative("ObjectiveManager.Finish", Native_ObjectiveManager_Finish);
     CreateNative("ObjectiveManager.GetCurrentObjective", Native_ObjectiveManager_GetCurrentObjective);
     CreateNative("ObjectiveManager.GetCurrentObjectiveIndex", Native_ObjectiveManager_GetCurrentObjectiveIndex);
     CreateNative("ObjectiveManager.GetObjectiveById", Native_ObjectiveManager_GetObjectiveById);
@@ -110,6 +112,14 @@ void LoadObjectiveManagerSignature(GameData gamedata)
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::Clear");
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_Clear] = EndPrepSDKCall()) == INVALID_HANDLE)
         SetFailState("Failed to load signature CNMRiH_ObjectiveManager::Clear.");
+
+    if (g_OS == OS_Linux)
+    {
+        StartPrepSDKCall(SDKCall_Raw);
+        PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::Finish");
+        if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_Finish] = EndPrepSDKCall()) == INVALID_HANDLE)
+            SetFailState("Failed to load signature CNMRiH_ObjectiveManager::Finish.");
+    }
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::GetObjectiveById");
@@ -280,6 +290,18 @@ static any Native_ObjectiveManager_GetCurrentObjectiveBoundary(Handle plugin, in
 static void Native_ObjectiveManager_Clear(Handle plugin, int numParams)
 {
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_Clear], g_pObjectiveManager);
+}
+
+static void Native_ObjectiveManager_Finish(Handle plugin, int numParams)
+{
+    if (g_OS == OS_Linux)
+    {
+        SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_Finish], g_pObjectiveManager);
+    }
+    else
+    {
+        ThrowNativeError(SP_ERROR_NOT_RUNNABLE, "ObjectiveManager::Finish() only support on linux.");
+    }
 }
 
 static any Native_ObjectiveManager_GetCurrentObjective(Handle plugin, int numParams)

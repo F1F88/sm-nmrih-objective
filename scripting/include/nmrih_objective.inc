@@ -270,12 +270,13 @@ methodmap ObjectiveManager < AddressBase
      */
     public static native void Clear();
 
-    // TODO
+    // TODO: add windows signature
     /**
      * Finish finishes the mission and shows the end screen.
+     *
+     * @note        Linux only.
      */
-    // public static native void Finish();
-
+    public static native void Finish();
 
     /**
      * Returns current objective instance.
