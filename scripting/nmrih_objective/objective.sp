@@ -247,8 +247,10 @@ static any Native_Objective_GetEntity(Handle plugin, int numParams)
     if (entityVector.IsNull())
         ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
 
-    int index = GetNativeCell(2);
-    return entityVector.Get(index); // UtlVector 会检查 index
+    int index  = GetNativeCell(2);
+    int entity = entityVector.Get(index); // UtlVector 会检查 index
+
+    return IsValidEntity(entity) ? entity : -1;
 }
 
 static any Native_Objective_GetEntityCount(Handle plugin, int numParams)
