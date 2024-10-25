@@ -19,6 +19,7 @@ enum    // Offset
 enum    // Signature
 {
     HDL_ObjectiveManager_CompleteCurrentObjective,
+    HDL_ObjectiveManager_Clear,
     HDL_ObjectiveManager_GetObjectiveById,
     // HDL_ObjectiveManager_GetObjectiveByIndex, // * Note: 由于找不到 windows sig, 所以改用 sp 模拟内部逻辑来实现
     HDL_ObjectiveManager_GetObjectiveByName,
@@ -48,6 +49,7 @@ void LoadObjectiveManagerNative()
     CreateNative("ObjectiveManager._pCurrentObjective.set", Native_ObjectiveManager_Set__pCurrentObjective);
     CreateNative("ObjectiveManager.CompleteCurrentObjective", Native_ObjectiveManager_CompleteCurrentObjective);
     CreateNative("ObjectiveManager.GetCurrentObjectiveBoundary", Native_ObjectiveManager_GetCurrentObjectiveBoundary);
+    CreateNative("ObjectiveManager.Clear", Native_ObjectiveManager_Clear);
     CreateNative("ObjectiveManager.GetCurrentObjective", Native_ObjectiveManager_GetCurrentObjective);
     CreateNative("ObjectiveManager.GetCurrentObjectiveIndex", Native_ObjectiveManager_GetCurrentObjectiveIndex);
     CreateNative("ObjectiveManager.GetObjectiveById", Native_ObjectiveManager_GetObjectiveById);
@@ -101,6 +103,11 @@ void LoadObjectiveManagerSignature(GameData gamedata)
     PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective] = EndPrepSDKCall()) == INVALID_HANDLE)
         SetFailState("Failed to load signature CNMRiH_ObjectiveManager::CompleteCurrentObjective.");
+
+    StartPrepSDKCall(SDKCall_Raw);
+    PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::Clear");
+    if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_Clear] = EndPrepSDKCall()) == INVALID_HANDLE)
+        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::Clear.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::GetObjectiveById");
@@ -261,6 +268,11 @@ static any Native_ObjectiveManager_GetCurrentObjectiveBoundary(Handle plugin, in
 {
     Objective currentObjective = ObjectiveManager.GetCurrentObjective();
     return currentObjective.GetObjectiveBoundary();
+}
+
+static void Native_ObjectiveManager_Clear(Handle plugin, int numParams)
+{
+    SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_Clear], g_pObjectiveManager);
 }
 
 static any Native_ObjectiveManager_GetCurrentObjective(Handle plugin, int numParams)

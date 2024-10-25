@@ -263,11 +263,10 @@ methodmap ObjectiveManager < AddressBase
     #pragma deprecated See: https:\/\/github.com/nmrih/source-game/issues/1495
     public static native ObjectiveBoundary GetCurrentObjectiveBoundary();
 
-    // TODO
     /**
      * Clear clears all the objectives and resets the ObjectiveManager state.
      */
-    // public static native void Clear();
+    public static native void Clear();
 
     // TODO
     /**

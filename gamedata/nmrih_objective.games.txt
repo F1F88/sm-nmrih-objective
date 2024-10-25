@@ -210,6 +210,14 @@
                 "linux"     "@_ZN23CNMRiH_ObjectiveManager24CompleteCurrentObjectiveE8string_t"
             }
 
+            // * Note: 根据 strings 'maps\\%s.nmo' 翻查 (上一行的 func)
+            "CNMRiH_ObjectiveManager::Clear"
+            {
+                "library"   "server"
+                "windows"   "\x56\x8B\xF1\x57\x8D\x4E\x14"
+                "linux"     "@_ZN23CNMRiH_ObjectiveManager5ClearEv"
+            }
+
             "CNMRiH_ObjectiveManager::GetObjectiveById"
             {
                 "library"   "server"
