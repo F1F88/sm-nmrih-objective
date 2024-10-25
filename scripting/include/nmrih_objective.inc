@@ -251,10 +251,9 @@ methodmap ObjectiveManager < AddressBase
     }
 
     /**
-     * Completes current objective, with targetname parameter of forced extraction zone.
+     * CompleteCurrentObjective completes the current objective and optionally sets a forced extraction zone (forcedExtractZone).
      *
-     * CompleteCurrentObjective completes the current objective and optionally sets a forced extraction zone.
-     * @param targetname    (forcedExtractZone) The name of the extraction zone to use, or "" for none.
+     * @param targetname    The name of the extraction zone to use, or "" for none.
      */
     public static native void CompleteCurrentObjective(const char[] targetname = NULL_STRING);
 
@@ -293,46 +292,43 @@ methodmap ObjectiveManager < AddressBase
     public static native int GetCurrentObjectiveIndex();
 
     /**
-     * Returns objective instance by ID.
-     *
      * GetObjectiveById returns the Objective object with the given id, or null if there is none.
-     * @return An Objective object or null.
-     * @param id The id of the objective to get.
+     *
+     * @param id        The id of the objective to get.
+     * @return          An Objective object or null.
      */
     public static native Objective GetObjectiveById(int id);
 
     /**
-     * Returns objective instance by index.
-     *
      * GetObjectiveByIndex returns the Objective object at the given index in the objective list, or null if there is none.
-     * @param index The index of the objective to get, starting from 0.
-     * @return An Objective object or null.
-     * @error       Invalid index.
+     *
+     * @param index     The index of the objective to get, starting from 0.
+     * @return          An Objective object or null.
+     * @error           Invalid index.
      */
     public static native Objective GetObjectiveByIndex(int index);
 
     /**
-     * Returns objective instance by name.
-     *
      * GetObjectiveByName returns the Objective object with the given name, or null if there is none.
-     * @param name The name of the objective to get.
-     * @return An Objective object or null.
+     *
+     * @param name      The name of the objective to get.
+     * @return          An Objective object or null.
      */
     public static native Objective GetObjectiveByName(const char[] name);
 
     /**
      * Fills array with current objective chain.
      *
-     * @note The ArrayList element type is Objective.
-     * @note 实际返回的 ArrayList 元素个数可能是 GetObjectiveChainCount - 1
+     * @note            The ArrayList element type is Objective.
+     * @note            实际返回的 ArrayList 元素个数可能是 GetObjectiveChainCount - 1
      */
     public static native ArrayList GetObjectiveChain();
 
     /**
      * Returns current objective chain element count.
      *
-     * @note 可能还包含一个撤离任务, 总之无法将最后一个 id 转换成对应的 objective,
-     *       所以 chain ArrayList 中的元素会缺少这一个.
+     * @note            可能还包含一个撤离任务, 总之无法将最后一个 id 转换成对应的 objective,
+     *                  所以 chain ArrayList 中的元素会缺少这一个.
      */
     public static native int GetObjectiveChainCount();
 
@@ -342,24 +338,20 @@ methodmap ObjectiveManager < AddressBase
     public static native int GetObjectiveCount();
 
     /**
-     * Returns true if objectives are complete.
-     *
      * IsCompleted returns true if all the objectives are completed, false otherwise.
-     * @return A bool value indicating if all the objectives are completed.
+     *
+     * @return          A bool value indicating if all the objectives are completed.
      */
     public static native bool IsCompleted();
 
     /**
-     * Returns true if objectives failed.
-     *
      * IsFailed returns true if any of the objectives are failed, false otherwise.
-     * @return A bool value indicating if any of the objectives are failed.
+     *
+     * @return          A bool value indicating if any of the objectives are failed.
      */
     public static native bool IsFailed();
 
     /**
-     * Starts next objective on the chain.
-     *
      * StartNextObjective starts the next objective in the list, if there is any.
      */
 	public static native void StartNextObjective();
