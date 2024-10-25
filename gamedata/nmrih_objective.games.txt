@@ -185,12 +185,12 @@
             }
 
             /*** ----- CNMRiH_ObjectiveBoundary ----- ***/
-            // "CNMRiH_ObjectiveBoundary::Start"
-            // {
-            //     "library"   "server"
-            //     // "windows"   "" // TODO
-            //     "linux"     "@_ZN24CNMRiH_ObjectiveBoundary5StartEv"
-            // }
+            "CNMRiH_ObjectiveBoundary::Start"
+            {
+                "library"   "server"
+                // "windows"   "" // TODO
+                "linux"     "@_ZN24CNMRiH_ObjectiveBoundary5StartEv"
+            }
 
             // By Dysphie https://github.com/dysphie/nmo-guard
             "CNMRiH_ObjectiveBoundary::Finish"
