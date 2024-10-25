@@ -7,6 +7,10 @@
 #pragma newdecls required
 #pragma semicolon 1
 
+/**
+ * Inspired by: https://github.com/dysphie/nmo-guard
+ *              https://github.com/dysphie/dystopia-servers/blob/2b7f30024efa3315bd16028be47fb8b0c87648ec/addons/sourcemod/scripting/include/nmr_objectives.inc
+ */
 #define PLUGIN_NAME        "NMRIH Objective Utils"
 #define PLUGIN_DESCRIPTION "No More Room In Hell objective utils"
 #define PLUGIN_VERSION     "1.2.0"

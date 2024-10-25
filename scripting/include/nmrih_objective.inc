@@ -12,12 +12,8 @@
 #include <utl_vector>
 
 /**
- * Inspired by: https://github.com/dysphie/nmo-guard
- */
-
-/**
- * CNMRiH_Objective
- * A map objective, used in conjunction with CObjectiveManager
+ * Objective is a class that represents an objective of a mission.
+ * It can have a name, a description, a list of entities and links, and a boundary.
  */
 methodmap Objective < AddressBase
 {
@@ -75,18 +71,62 @@ methodmap Objective < AddressBase
 
     public native int GetId();
 
+    /**
+     * GetName returns the name of this objective, or "" if there is none.
+     *
+     * @param buffer The buffer to store the name in.
+     * @param maxlen The maximum length of the buffer.
+     * @return The number of bytes written to the buffer, or 0 if there is no name.
+     */
     public native void GetName(char[] buffer, int maxlen);
 
+    /**
+     * GetDescription returns the description of this objective, or "" if there is none.
+     *
+     * @param buffer The buffer to store the description in.
+     * @param maxlen The maximum length of the buffer.
+     * @return The number of bytes written to the buffer, or 0 if there is no description.
+     */
     public native void GetDescription(char[] buffer, int maxlen);
 
     public native int GetEntity(int index);
 
     public native int GetEntityCount();
 
+    // TODO
+    /**
+     * GetEntity returns the name and index of an entity in this objective's list by its index in the list, or "" and -1 if there is none.
+     * @param index The index of the entity in the list, starting from 0.
+     * @param buffer The buffer to store the name of the entity in.
+     * @param maxlen The maximum length of the buffer.
+     * @return The index of the entity in the game world, or -1 if there is no such entity.
+     */
+    // public native ArrayList GetEntityList();
+
+    // TODO
+    /**
+     * HasLink returns true if this objective has a link with the given id, false otherwise.
+     * @param linkId The id of the link to check for.
+     * @return A bool value indicating if this objective has the link.
+     */
+    // public native bool HasLink(int linkId);
+
+    /**
+     * GetLink returns the id of a link in this objective's list by its index in the list, or -1 if there is none.
+     * A link is an id that connects two objectives together and defines how they are related.
+     * For example, a link can indicate that an objective must be completed before another one can start, or that an objective is optional, etc.
+     *
+     * @param index The index of the link in the list, starting from 0.
+     * @return The id of the link, or -1 if there is no such link.
+     */
     public native int GetLink(int index);
 
     public native int GetLinkCount();
 
+    /**
+     * IsEndObjective returns true if this objective is the last one in the mission, false otherwise.
+     * @return A bool value indicating if this objective is the end objective.
+     */
     public native bool IsEndObjective();
 
     public native bool IsAntiObjective();
@@ -98,13 +138,23 @@ methodmap Objective < AddressBase
 
     /**
      * Returns entity handle to current objective boundary.
+     *
+     * GetObjectiveBoundary returns the ObjectiveBoundary object of this objective, or null if there is none.
+     * @return An ObjectiveBoundary object or null.
      */
     public native ObjectiveBoundary GetObjectiveBoundary();
+
+    // TODO
+    /**
+     * UpdateBoundary updates the boundary of this objective based on its entities and links.
+     */
+    // public native void UpdateBoundary();
 }
 
 
 /**
- * CNMRiH_ObjectiveBoundary
+ * ObjectiveBoundary is a class that represents a boundary for an objective.
+ * It can be a trigger, a marker, a zone or any other entity that defines where an objective takes place.
  */
 methodmap ObjectiveBoundary < AddressBase
 {
@@ -114,8 +164,14 @@ methodmap ObjectiveBoundary < AddressBase
     }
 
     // TODO windows sig
+    /**
+     * Finish finishes the boundary and removes any effects or markers associated with it.
+     */
 	// public native void Start();
 
+    /**
+     * Start starts the boundary and adds any effects or markers associated with it.
+     */
 	public native void Finish();
 }
 
@@ -185,8 +241,35 @@ methodmap ObjectiveManager < AddressBase
 
     /**
      * Completes current objective, with targetname parameter of forced extraction zone.
+     *
+     * CompleteCurrentObjective completes the current objective and optionally sets a forced extraction zone.
+     * @param targetname    (forcedExtractZone) The name of the extraction zone to use, or "" for none.
      */
-    public native void CompleteCurrentObjective(const char[] targetname);
+    public native void CompleteCurrentObjective(const char[] targetname = NULL_STRING);
+
+    /**
+     * Returns the ObjectiveBoundary object of the current objective, or null if there is none.
+     * @return An ObjectiveBoundary object or null.
+     */
+    // #pragma deprecated See: https:\/\/github.com/nmrih/source-game/issues/1495
+    // public ObjectiveBoundary GetCurrentObjectiveBoundary()
+    // {
+    //     Objective currentObjective = this.GetCurrentObjective();
+    //     return currentObjective.GetObjectiveBoundary();
+    // }
+
+    // TODO
+    /**
+     * Clear clears all the objectives and resets the ObjectiveManager state.
+     */
+    // public static native void Clear();
+
+    // TODO
+    /**
+     * Finish finishes the mission and shows the end screen.
+     */
+    // public static native void Finish();
+
 
     /**
      * Returns current objective instance.
@@ -222,18 +305,29 @@ methodmap ObjectiveManager < AddressBase
 
     /**
      * Returns objective instance by ID.
+     *
+     * GetObjectiveById returns the Objective object with the given id, or null if there is none.
+     * @return An Objective object or null.
+     * @param id The id of the objective to get.
      */
     public native Objective GetObjectiveById(int id);
 
     /**
      * Returns objective instance by index.
      *
+     * GetObjectiveByIndex returns the Objective object at the given index in the objective list, or null if there is none.
+     * @param index The index of the objective to get, starting from 0.
+     * @return An Objective object or null.
      * @error       Invalid index.
      */
     public native Objective GetObjectiveByIndex(int index);
 
     /**
      * Returns objective instance by name.
+     *
+     * GetObjectiveByName returns the Objective object with the given name, or null if there is none.
+     * @param name The name of the objective to get.
+     * @return An Objective object or null.
      */
     public native Objective GetObjectiveByName(const char[] name);
 
@@ -260,16 +354,30 @@ methodmap ObjectiveManager < AddressBase
 
     /**
      * Returns true if objectives are complete.
+     *
+     * IsCompleted returns true if all the objectives are completed, false otherwise.
+     * @return A bool value indicating if all the objectives are completed.
      */
     public native bool IsCompleted();
 
     /**
      * Returns true if objectives failed.
+     *
+     * IsFailed returns true if any of the objectives are failed, false otherwise.
+     * @return A bool value indicating if any of the objectives are failed.
      */
     public native bool IsFailed();
 
     /**
      * Starts next objective on the chain.
+     *
+     * StartNextObjective starts the next objective in the list, if there is any.
      */
 	public native void StartNextObjective();
+
+    // TODO
+    /**
+     * UpdateObjectiveBoundaries updates the boundaries of all the objectives based on their entities and links.
+     */
+    // public static native void UpdateObjectiveBoundaries();
 }
