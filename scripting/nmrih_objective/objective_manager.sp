@@ -26,7 +26,7 @@ enum    // Signature
     HDL_ObjectiveManager_Total
 }
 
-static Address ObjectiveManagerAddress;
+static Address g_pObjectiveManager;
 static int     iObjectiveManagerOffset[OFS_ObjectiveManager_Total];
 static Handle  hObjevtiveManagerHandle[HDL_ObjectiveManager_Total];
 
@@ -61,8 +61,8 @@ void LoadObjectiveManagerNative()
 
 void LoadObjectiveManagerAddress(GameData gamedata)
 {
-    ObjectiveManagerAddress = gamedata.GetAddress("CNMRiH_ObjectiveManager");
-    if (!ObjectiveManagerAddress)
+    g_pObjectiveManager = gamedata.GetAddress("CNMRiH_ObjectiveManager");
+    if (g_pObjectiveManager == Address_Null)
         SetFailState("Failed to load address CNMRiH_ObjectiveManager.");
 }
 
@@ -130,10 +130,7 @@ void LoadObjectiveManagerSignature(GameData gamedata)
 
 static any Native_ObjectiveManager_Instance(Handle plugin, int numParams)
 {
-    if (ObjectiveManagerAddress == Address_Null)
-        ThrowNativeError(SP_ERROR_NATIVE, "ObjectiveManager instance is null.");
-
-    return view_as<ObjectiveManager>(ObjectiveManagerAddress);
+    return g_pObjectiveManager;
 }
 
 static any Native_ObjectiveManager_Get__pObjectivesVector(Handle plugin, int numParams)
