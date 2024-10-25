@@ -47,6 +47,7 @@ void LoadObjectiveManagerNative()
     CreateNative("ObjectiveManager._pCurrentObjective.get", Native_ObjectiveManager_Get__pCurrentObjective);
     CreateNative("ObjectiveManager._pCurrentObjective.set", Native_ObjectiveManager_Set__pCurrentObjective);
     CreateNative("ObjectiveManager.CompleteCurrentObjective", Native_ObjectiveManager_CompleteCurrentObjective);
+    CreateNative("ObjectiveManager.GetCurrentObjective", Native_ObjectiveManager_GetCurrentObjective);
     CreateNative("ObjectiveManager.GetCurrentObjectiveIndex", Native_ObjectiveManager_GetCurrentObjectiveIndex);
     CreateNative("ObjectiveManager.GetObjectiveById", Native_ObjectiveManager_GetObjectiveById);
     CreateNative("ObjectiveManager.GetObjectiveByIndex", Native_ObjectiveManager_GetObjectiveByIndex);
@@ -253,6 +254,22 @@ static void Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int 
     GetNativeString(1, targetname, maxlen); // 读取传入的字符串
 
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], g_pObjectiveManager, targetname);
+}
+
+static any Native_ObjectiveManager_GetCurrentObjective(Handle plugin, int numParams)
+{
+    // 参考自 CNMRiH_ObjectiveManager::ScriptGetObjectiveByIndex 的逆向
+    ObjectiveManager objectiveManager = ObjectiveManager.Instance();
+    int index = objectiveManager._iCurrentObjectiveIndex;
+    int count = objectiveManager._iObjectivesCount;
+    if (index < 0 || index >= count)
+        ThrowNativeError(SP_ERROR_NATIVE, "Invalid objective index (%d) [0-%d].", index, count);
+
+    UtlVector chain = objectiveManager._pObjectiveChainVector;
+    if (chain.IsNull())
+        ThrowNativeError(SP_ERROR_NATIVE, "ObjectiveManager._pObjectivesVector is null.");
+
+    return chain.Get(index);
 }
 
 static any Native_ObjectiveManager_GetCurrentObjectiveIndex(Handle plugin, int numParams)

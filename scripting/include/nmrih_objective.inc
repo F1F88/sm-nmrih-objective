@@ -274,30 +274,7 @@ methodmap ObjectiveManager < AddressBase
     /**
      * Returns current objective instance.
      */
-    public static Objective GetCurrentObjective()
-    {
-        // 参考自 CNMRiH_ObjectiveManager::ScriptGetObjectiveByIndex 的逆向
-        ObjectiveManager objectiveManager = ObjectiveManager.Instance();
-        int index = objectiveManager._iCurrentObjectiveIndex;
-        int len = objectiveManager._iObjectivesCount;
-        if (index < 0 || index >= len)
-        {
-            ThrowError("Invalid objective index (%d) [0-%d].", index, len);
-        }
-
-        UtlVector chain = objectiveManager._pObjectiveChainVector;
-        if (chain.addr == Address_Null)
-        {
-            ThrowError("Invalid objective chain instance.");
-        }
-
-        Objective result = chain.Get(index);
-        if (result.addr == Address_Null)
-        {
-            ThrowError("Invalid objective instance.");
-        }
-        return result;
-    }
+    public static native Objective GetCurrentObjective();
 
     /**
      * Returns current objective index.
