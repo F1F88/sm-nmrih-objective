@@ -101,8 +101,7 @@ methodmap Objective < AddressBase
 
     public native int GetEntityCount();
 
-    // TODO
-    // public native ArrayList GetEntityList();
+    public native ArrayList GetEntityList();
 
     // TODO
     /**

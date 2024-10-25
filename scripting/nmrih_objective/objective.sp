@@ -44,6 +44,7 @@ void LoadObjectiveNative()
     CreateNative("Objective.GetDescription", Native_Objective_GetDescription);
     CreateNative("Objective.GetEntity", Native_Objective_GetEntity);
     CreateNative("Objective.GetEntityCount", Native_Objective_GetEntityCount);
+    CreateNative("Objective.GetEntityList", Native_Objective_GetEntityList);
     CreateNative("Objective.GetLink", Native_Objective_GetLink);
     CreateNative("Objective.GetLinkCount", Native_Objective_GetLinkCount);
     CreateNative("Objective.IsEndObjective", Native_Objective_IsEndObjective);
@@ -257,6 +258,25 @@ static any Native_Objective_GetEntityCount(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
     return objective._iEntitysCount; // native 会检查 objective
+}
+
+static any Native_Objective_GetEntityList(Handle plugin, int numParams)
+{
+    Objective objective = GetNativeCell(1);
+
+    UtlVector entityVector = objective._pEntitysVector; // native 会检查 objective
+    if (entityVector.IsNull())
+        ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
+
+    int size = entityVector.size;
+    ArrayList result = new ArrayList();
+
+    for (int i = 0; i < size; ++i)
+    {
+        result.Push(entityVector.Get(i));
+    }
+
+    return result;
 }
 
 static any Native_Objective_GetLink(Handle plugin, int numParams)
