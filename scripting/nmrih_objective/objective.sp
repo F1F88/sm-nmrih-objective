@@ -18,6 +18,7 @@ enum    // Offset
 enum
 {
     HDL_Objective_GetObjectiveBoundary,
+    HDL_Objective_UpdateBoundary,
     HDL_Objective_Total
 }
 
@@ -52,6 +53,7 @@ void LoadObjectiveNative()
     CreateNative("Objective.IsAntiObjective", Native_Objective_IsAntiObjective);
     CreateNative("Objective.GetObjectiveBoundaryName", Native_Objective_GetObjectiveBoundaryName);
     CreateNative("Objective.GetObjectiveBoundary", Native_Objective_GetObjectiveBoundary);
+    CreateNative("Objective.UpdateBoundary", Native_Objective_UpdateBoundary);
 }
 
 void LoadObjectiveOffset(GameData gamedata)
@@ -89,6 +91,11 @@ void LoadObjectiveSignature(GameData gamedata)
     PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
     if ((hObjevtiveHandle[HDL_Objective_GetObjectiveBoundary] = EndPrepSDKCall()) == null)
         SetFailState("Failed to load signature CNMRiH_Objective::GetObjectiveBoundary.");
+
+    StartPrepSDKCall(SDKCall_Raw);
+    PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_Objective::UpdateBoundary");
+    if ((hObjevtiveHandle[HDL_Objective_UpdateBoundary] = EndPrepSDKCall()) == INVALID_HANDLE)
+        SetFailState("Failed to load signature CNMRiH_Objective::UpdateBoundary.");
 }
 
 
@@ -357,4 +364,13 @@ static any Native_Objective_GetObjectiveBoundary(Handle plugin, int numParams)
 
     ObjectiveBoundary objectiveBoundary = SDKCall(hObjevtiveHandle[HDL_Objective_GetObjectiveBoundary], objective.addr);
     return objectiveBoundary;
+}
+
+static void Native_Objective_UpdateBoundary(Handle plugin, int numParams)
+{
+    Objective objective = GetNativeCell(1);
+    if (objective.IsNull())
+        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+
+    SDKCall(hObjevtiveHandle[HDL_Objective_UpdateBoundary], objective.addr);
 }

@@ -177,6 +177,13 @@
                 "linux"     "@_ZNK16CNMRiH_Objective20GetObjectiveBoundaryEv"
             }
 
+            "CNMRiH_Objective::UpdateBoundary"
+            {
+                "library"   "server"
+                "windows"   "\x56\x57\x8B\xF1\xBF\x2A\x2A\x2A\x2A\x6A\x00"
+                "linux"     "@_ZNK16CNMRiH_Objective14UpdateBoundaryEv"
+            }
+
             /*** ----- CNMRiH_ObjectiveBoundary ----- ***/
             // "CNMRiH_ObjectiveBoundary::Start"
             // {

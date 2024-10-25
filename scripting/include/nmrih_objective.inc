@@ -152,11 +152,10 @@ methodmap Objective < AddressBase
      */
     public native ObjectiveBoundary GetObjectiveBoundary();
 
-    // TODO
     /**
      * UpdateBoundary updates the boundary of this objective based on its entities and links.
      */
-    // public native void UpdateBoundary();
+    public native void UpdateBoundary();
 }
 
 
