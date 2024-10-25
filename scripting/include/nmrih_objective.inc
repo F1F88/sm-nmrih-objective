@@ -350,9 +350,8 @@ methodmap ObjectiveManager < AddressBase
      */
 	public static native void StartNextObjective();
 
-    // TODO
     /**
      * UpdateObjectiveBoundaries updates the boundaries of all the objectives based on their entities and links.
      */
-    // public static native void UpdateObjectiveBoundaries();
+    public static native void UpdateObjectiveBoundaries();
 }

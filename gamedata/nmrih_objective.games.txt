@@ -248,6 +248,14 @@
                 "linux"     "@_ZN23CNMRiH_ObjectiveManager18StartNextObjectiveEv"
             }
 
+            // * Note: 这是 CNMRiH_Objective::UpdateBoundary 的唯一调用者
+            "CNMRiH_ObjectiveManager::UpdateObjectiveBoundaries"
+            {
+                "library"   "server"
+                "windows"   "\x56\x57\x8B\xF9\x33\xF6\x39\x77\x20"
+                "linux"     "@_ZN23CNMRiH_ObjectiveManager25UpdateObjectiveBoundariesEv"
+            }
+
             // By Dysphie https://github.com/dysphie/nmo-guard
             // Used to find g_ObjectiveManager on Windows.
             "ObjectivesParser::ParseObjectives"

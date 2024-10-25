@@ -24,6 +24,7 @@ enum    // Signature
     // HDL_ObjectiveManager_GetObjectiveByIndex, // * Note: 由于找不到 windows sig, 所以改用 sp 模拟内部逻辑来实现
     HDL_ObjectiveManager_GetObjectiveByName,
     HDL_ObjectiveManager_StartNextObjective,
+    HDL_ObjectiveManager_UpdateObjectiveBoundaries,
     HDL_ObjectiveManager_Total
 }
 
@@ -61,6 +62,7 @@ void LoadObjectiveManagerNative()
     CreateNative("ObjectiveManager.IsCompleted", Native_ObjectiveManager_IsCompleted);
     CreateNative("ObjectiveManager.IsFailed", Native_ObjectiveManager_IsFailed);
     CreateNative("ObjectiveManager.StartNextObjective", Native_ObjectiveManager_StartNextObjective);
+    CreateNative("ObjectiveManager.UpdateObjectiveBoundaries", Native_ObjectiveManager_UpdateObjectiveBoundaries);
 }
 
 void LoadObjectiveManagerAddress(GameData gamedata)
@@ -134,6 +136,11 @@ void LoadObjectiveManagerSignature(GameData gamedata)
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::StartNextObjective");
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective] = EndPrepSDKCall()) == INVALID_HANDLE)
         SetFailState("Failed to load signature CNMRiH_ObjectiveManager::StartNextObjective.");
+
+    StartPrepSDKCall(SDKCall_Raw);
+    PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::UpdateObjectiveBoundaries");
+    if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_UpdateObjectiveBoundaries] = EndPrepSDKCall()) == INVALID_HANDLE)
+        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::UpdateObjectiveBoundaries.");
 }
 
 
@@ -366,4 +373,9 @@ static any Native_ObjectiveManager_IsFailed(Handle plugin, int numParams)
 static void Native_ObjectiveManager_StartNextObjective(Handle plugin, int numParams)
 {
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective], g_pObjectiveManager);
+}
+
+static void Native_ObjectiveManager_UpdateObjectiveBoundaries(Handle plugin, int numParams)
+{
+    SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_UpdateObjectiveBoundaries], g_pObjectiveManager);
 }
