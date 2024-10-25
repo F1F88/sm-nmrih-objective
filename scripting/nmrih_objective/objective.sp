@@ -196,48 +196,54 @@ static any Native_Objective_Get__sObjectiveBoundaryName(Handle plugin, int numPa
 static any Native_Objective_GetId(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    return objective.m_iId;
+    return objective.m_iId; // native 会检查 objective
 }
 
-static void Native_Objective_GetName(Handle plugin, int numParams)
+static int Native_Objective_GetName(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
 
-    Stringt name = objective._sName;
+    int bytes;
+    Stringt name = objective._sName; // native 会检查 objective
     if (name.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective._sName is null.");
-
-    int     maxlen = GetNativeCell(3);
-    char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-    name.ToCharArray(buffer, maxlen);
-    SetNativeString(2, buffer, maxlen);
+    {
+        SetNativeString(2, "", 1, _, bytes);
+    }
+    else
+    {
+        int     maxlen = GetNativeCell(3);
+        char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
+        name.ToCharArray(buffer, maxlen);
+        SetNativeString(2, buffer, maxlen, _, bytes);
+    }
+    return bytes;
 }
 
-static void Native_Objective_GetDescription(Handle plugin, int numParams)
+static int Native_Objective_GetDescription(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
 
-    Stringt description = objective._sDescription;
+    int bytes;
+    Stringt description = objective._sDescription; // native 会检查 objective
     if (description.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective._sDescription is null.");
-
-    int     maxlen = GetNativeCell(3);
-    char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-    description.ToCharArray(buffer, maxlen);
-    SetNativeString(2, buffer, maxlen);
+    {
+        SetNativeString(2, "", 1, _, bytes);
+    }
+    else
+    {
+        int     maxlen = GetNativeCell(3);
+        char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
+        description.ToCharArray(buffer, maxlen);
+        SetNativeString(2, buffer, maxlen, _, bytes);
+    }
+    return bytes;
 }
 
 static any Native_Objective_GetEntity(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
 
-    UtlVector entityVector = objective._pEntitysVector;
+    UtlVector entityVector = objective._pEntitysVector; // native 会检查 objective
     if (entityVector.IsNull())
         ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
 
@@ -248,18 +254,16 @@ static any Native_Objective_GetEntity(Handle plugin, int numParams)
 static any Native_Objective_GetEntityCount(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    return objective._iEntitysCount;
+    return objective._iEntitysCount; // native 会检查 objective
 }
 
 static any Native_Objective_GetLink(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
 
-    UtlVector linkVector = objective._pLinksVector;
+    UtlVector linkVector = objective._pLinksVector; // native 会检查 objective
     if (linkVector.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective._pLinksVector is null.");
+        return -1;
 
     int index = GetNativeCell(2);
     return linkVector.Get(index); // UtlVector 会检查 index
@@ -268,45 +272,39 @@ static any Native_Objective_GetLink(Handle plugin, int numParams)
 static any Native_Objective_GetLinkCount(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
-
-    return objective._iLinksCount;
+    return objective._iLinksCount; // native 会检查 objective
 }
 
 static any Native_Objective_IsEndObjective(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
-
-    return objective._iLinksCount == 0;
+    return objective._iLinksCount == 0; // native 会检查 objective
 }
 
 static any Native_Objective_IsAntiObjective(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
-
-    return objective._bIsAntiObjective;
+    return objective._bIsAntiObjective; // native 会检查 objective
 }
 
 static any Native_Objective_GetObjectiveBoundaryName(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
-    if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
 
-    Stringt objectiveBoundaryName = objective._sObjectiveBoundaryName;
-    if (objectiveBoundaryName.IsNull()) // 可能只是回合没有开始或者wave模式
-        ThrowNativeError(SP_ERROR_PARAM, "Objective._sObjectiveBoundaryName is null.");
-
-    int     maxlen = GetNativeCell(3);
-    char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-    objectiveBoundaryName.ToCharArray(buffer, maxlen);
-    SetNativeString(2, buffer, maxlen);
-    return true;
+    int bytes;
+    Stringt objectiveBoundaryName = objective._sObjectiveBoundaryName; // native 会检查 objective
+    if (objectiveBoundaryName.IsNull())
+    {
+        SetNativeString(2, "", 1, _, bytes);
+    }
+    else
+    {
+        int     maxlen = GetNativeCell(3);
+        char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
+        objectiveBoundaryName.ToCharArray(buffer, maxlen);
+        SetNativeString(2, buffer, maxlen, _, bytes);
+    }
+    return bytes;
 }
 
 static any Native_Objective_GetObjectiveBoundary(Handle plugin, int numParams)
@@ -315,5 +313,6 @@ static any Native_Objective_GetObjectiveBoundary(Handle plugin, int numParams)
     if (objective.IsNull())
         ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
 
-    return SDKCall(hObjevtiveHandle[HDL_Objective_GetObjectiveBoundary], objective.addr);
+    ObjectiveBoundary objectiveBoundary = SDKCall(hObjevtiveHandle[HDL_Objective_GetObjectiveBoundary], objective.addr);
+    return objectiveBoundary;
 }

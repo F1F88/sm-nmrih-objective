@@ -74,20 +74,22 @@ methodmap Objective < AddressBase
     /**
      * GetName returns the name of this objective, or "" if there is none.
      *
-     * @param buffer The buffer to store the name in.
-     * @param maxlen The maximum length of the buffer.
-     * @return The number of bytes written to the buffer, or 0 if there is no name.
+     * @param buffer    The buffer to store the name in.
+     * @param maxlen    The maximum length of the buffer.
+     * @return          The number of bytes written to the buffer, or 0 if there is no name.
+     * @error           Invalid Objective addr.
      */
-    public native void GetName(char[] buffer, int maxlen);
+    public native int GetName(char[] buffer, int maxlen);
 
     /**
      * GetDescription returns the description of this objective, or "" if there is none.
      *
-     * @param buffer The buffer to store the description in.
-     * @param maxlen The maximum length of the buffer.
-     * @return The number of bytes written to the buffer, or 0 if there is no description.
+     * @param buffer    The buffer to store the description in.
+     * @param maxlen    The maximum length of the buffer.
+     * @return          The number of bytes written to the buffer, or 0 if there is no description.
+     * @error           Invalid Objective addr.
      */
-    public native void GetDescription(char[] buffer, int maxlen);
+    public native int GetDescription(char[] buffer, int maxlen);
 
     public native int GetEntity(int index);
 
@@ -96,18 +98,19 @@ methodmap Objective < AddressBase
     // TODO
     /**
      * GetEntity returns the name and index of an entity in this objective's list by its index in the list, or "" and -1 if there is none.
-     * @param index The index of the entity in the list, starting from 0.
-     * @param buffer The buffer to store the name of the entity in.
-     * @param maxlen The maximum length of the buffer.
-     * @return The index of the entity in the game world, or -1 if there is no such entity.
+     *
+     * @param index     The index of the entity in the list, starting from 0.
+     * @param buffer    The buffer to store the name of the entity in.
+     * @param maxlen    The maximum length of the buffer.
+     * @return          The index of the entity in the game world, or -1 if there is no such entity.
      */
     // public native ArrayList GetEntityList();
 
     // TODO
     /**
      * HasLink returns true if this objective has a link with the given id, false otherwise.
-     * @param linkId The id of the link to check for.
-     * @return A bool value indicating if this objective has the link.
+     * @param linkId    The id of the link to check for.
+     * @return          A bool value indicating if this objective has the link.
      */
     // public native bool HasLink(int linkId);
 
@@ -116,8 +119,9 @@ methodmap Objective < AddressBase
      * A link is an id that connects two objectives together and defines how they are related.
      * For example, a link can indicate that an objective must be completed before another one can start, or that an objective is optional, etc.
      *
-     * @param index The index of the link in the list, starting from 0.
-     * @return The id of the link, or -1 if there is no such link.
+     * @param index     The index of the link in the list, starting from 0.
+     * @return          The id of the link, or -1 if there is no such link.
+     * @error           Invalid Objective addr or index out of bounds.
      */
     public native int GetLink(int index);
 
@@ -125,22 +129,29 @@ methodmap Objective < AddressBase
 
     /**
      * IsEndObjective returns true if this objective is the last one in the mission, false otherwise.
-     * @return A bool value indicating if this objective is the end objective.
+     *
+     * @return          A bool value indicating if this objective is the end objective.
+     * @error           Invalid Objective addr.
      */
     public native bool IsEndObjective();
 
     public native bool IsAntiObjective();
 
     /**
-     * Returns name of the current objective boundary.
+     * Returns name of the current objective boundary, or "" if there is none.
+     *
+     * @param buffer    The buffer to store the name in.
+     * @param maxlen    The maximum length of the buffer.
+     * @return          The number of bytes written to the buffer, or 0 if there is no name.
+     * @error           Invalid Objective addr.
      */
-    public native void GetObjectiveBoundaryName(char[] buffer, int maxlen);
+    public native int GetObjectiveBoundaryName(char[] buffer, int maxlen);
 
     /**
-     * Returns entity handle to current objective boundary.
-     *
      * GetObjectiveBoundary returns the ObjectiveBoundary object of this objective, or null if there is none.
-     * @return An ObjectiveBoundary object or null.
+     *
+     * @return          An ObjectiveBoundary object or null.
+     * @error           Invalid Objective addr.
      */
     public native ObjectiveBoundary GetObjectiveBoundary();
 
