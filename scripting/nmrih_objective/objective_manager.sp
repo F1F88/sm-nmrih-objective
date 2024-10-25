@@ -47,6 +47,7 @@ void LoadObjectiveManagerNative()
     CreateNative("ObjectiveManager._pCurrentObjective.get", Native_ObjectiveManager_Get__pCurrentObjective);
     CreateNative("ObjectiveManager._pCurrentObjective.set", Native_ObjectiveManager_Set__pCurrentObjective);
     CreateNative("ObjectiveManager.CompleteCurrentObjective", Native_ObjectiveManager_CompleteCurrentObjective);
+    CreateNative("ObjectiveManager.GetCurrentObjectiveBoundary", Native_ObjectiveManager_GetCurrentObjectiveBoundary);
     CreateNative("ObjectiveManager.GetCurrentObjective", Native_ObjectiveManager_GetCurrentObjective);
     CreateNative("ObjectiveManager.GetCurrentObjectiveIndex", Native_ObjectiveManager_GetCurrentObjectiveIndex);
     CreateNative("ObjectiveManager.GetObjectiveById", Native_ObjectiveManager_GetObjectiveById);
@@ -254,6 +255,12 @@ static void Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int 
     GetNativeString(1, targetname, maxlen); // 读取传入的字符串
 
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], g_pObjectiveManager, targetname);
+}
+
+static any Native_ObjectiveManager_GetCurrentObjectiveBoundary(Handle plugin, int numParams)
+{
+    Objective currentObjective = ObjectiveManager.GetCurrentObjective();
+    return currentObjective.GetObjectiveBoundary();
 }
 
 static any Native_ObjectiveManager_GetCurrentObjective(Handle plugin, int numParams)

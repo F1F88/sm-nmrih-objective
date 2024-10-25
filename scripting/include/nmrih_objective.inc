@@ -259,14 +259,13 @@ methodmap ObjectiveManager < AddressBase
 
     /**
      * Returns the ObjectiveBoundary object of the current objective, or null if there is none.
-     * @return An ObjectiveBoundary object or null.
+     *
+     * @note                由于官方移除了这个接口，不保证未来游戏更新后这个 native 仍正常工作
+     *
+     * @return              An ObjectiveBoundary object or null.
      */
-    // #pragma deprecated See: https:\/\/github.com/nmrih/source-game/issues/1495
-    // public ObjectiveBoundary GetCurrentObjectiveBoundary()
-    // {
-    //     Objective currentObjective = this.GetCurrentObjective();
-    //     return currentObjective.GetObjectiveBoundary();
-    // }
+    #pragma deprecated See: https:\/\/github.com/nmrih/source-game/issues/1495
+    public static native ObjectiveBoundary GetCurrentObjectiveBoundary();
 
     // TODO
     /**
