@@ -40,11 +40,11 @@ void LoadObjectiveBoundarySignature(GameData gamedata)
 //     return SDKCall(hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Start], objectiveBoundary.addr);
 // }
 
-static any Native_ObjectiveBoundary_Finish(Handle plugin, int numParams)
+static void Native_ObjectiveBoundary_Finish(Handle plugin, int numParams)
 {
     ObjectiveBoundary objectiveBoundary = GetNativeCell(1);
     if (objectiveBoundary.IsNull())
         ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveBoundary instance is null.");
 
-    return SDKCall(hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Finish], objectiveBoundary.addr);
+    SDKCall(hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Finish], objectiveBoundary.addr);
 }

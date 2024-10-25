@@ -178,7 +178,7 @@ static any Native_ObjectiveManager_Get__bIsCompleted(Handle plugin, int numParam
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsCompleted], NumberType_Int8);
 }
 
-static any Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numParams)
+static void Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
@@ -186,7 +186,6 @@ static any Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numParam
 
     bool value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsCompleted], value, NumberType_Int8);
-    return true;
 }
 
 static any Native_ObjectiveManager_Get__bIsFailed(Handle plugin, int numParams)
@@ -198,7 +197,7 @@ static any Native_ObjectiveManager_Get__bIsFailed(Handle plugin, int numParams)
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsFailed], NumberType_Int8);
 }
 
-static any Native_ObjectiveManager_Set__bIsFailed(Handle plugin, int numParams)
+static void Native_ObjectiveManager_Set__bIsFailed(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
@@ -206,7 +205,6 @@ static any Native_ObjectiveManager_Set__bIsFailed(Handle plugin, int numParams)
 
     bool value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsFailed], value, NumberType_Int8);
-    return true;
 }
 
 static any Native_ObjectiveManager_Get__iCurrentObjectiveIndex(Handle plugin, int numParams)
@@ -218,7 +216,7 @@ static any Native_ObjectiveManager_Get__iCurrentObjectiveIndex(Handle plugin, in
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iCurrentObjectiveIndex], NumberType_Int32);
 }
 
-static any Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, int numParams)
+static void Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
@@ -226,7 +224,6 @@ static any Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, in
 
     int value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iCurrentObjectiveIndex], value, NumberType_Int32);
-    return true;
 }
 
 static any Native_ObjectiveManager_Get__pCurrentObjective(Handle plugin, int numParams)
@@ -238,7 +235,7 @@ static any Native_ObjectiveManager_Get__pCurrentObjective(Handle plugin, int num
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pCurrentObjective], NumberType_Int32);
 }
 
-static any Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int numParams)
+static void Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
@@ -246,10 +243,9 @@ static any Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int num
 
     Objective value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pCurrentObjective], value, NumberType_Int32);
-    return true;
 }
 
-static any Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int numParams)
+static void Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
@@ -260,7 +256,7 @@ static any Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int n
     char[] targetname = new char[++maxlen]; // 需要增加一位用于存储 '\0'
     GetNativeString(2, targetname, maxlen); // 读取传入的字符串
 
-    return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], objectiveManager.addr, targetname);
+    SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], objectiveManager.addr, targetname);
 }
 
 static any Native_ObjectiveManager_GetCurrentObjectiveIndex(Handle plugin, int numParams)
@@ -371,11 +367,11 @@ static any Native_ObjectiveManager_IsFailed(Handle plugin, int numParams)
     return objectiveManager._bIsFailed;
 }
 
-static any Native_ObjectiveManager_StartNextObjective(Handle plugin, int numParams)
+static void Native_ObjectiveManager_StartNextObjective(Handle plugin, int numParams)
 {
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
         ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
-    return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective], objectiveManager.addr);
+    SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective], objectiveManager.addr);
 }

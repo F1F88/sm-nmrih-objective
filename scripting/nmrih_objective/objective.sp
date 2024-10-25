@@ -100,7 +100,7 @@ static any Native_Objective_Get_m_iId(Handle plugin, int numParams)
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective_m_iId], NumberType_Int32);
 }
 
-static any Native_Objective_Set_m_iId(Handle plugin, int numParams)
+static void Native_Objective_Set_m_iId(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
@@ -108,7 +108,6 @@ static any Native_Objective_Set_m_iId(Handle plugin, int numParams)
 
     int value = GetNativeCell(2);
     StoreToAddress(objective.addr + iObjectiveOffset[OFS_Objective_m_iId], value, NumberType_Int32);
-    return true;
 }
 
 static any Native_Objective_Get__sName(Handle plugin, int numParams)
@@ -174,7 +173,7 @@ static any Native_Objective_Get__bIsAntiObjective(Handle plugin, int numParams)
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective__bIsAntiObjective], NumberType_Int8);
 }
 
-static any Native_Objective_Set__bIsAntiObjective(Handle plugin, int numParams)
+static void Native_Objective_Set__bIsAntiObjective(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
@@ -182,7 +181,6 @@ static any Native_Objective_Set__bIsAntiObjective(Handle plugin, int numParams)
 
     bool value = GetNativeCell(2);
     StoreToAddress(objective.addr + iObjectiveOffset[OFS_Objective__bIsAntiObjective], value, NumberType_Int8);
-    return true;
 }
 
 static any Native_Objective_Get__sObjectiveBoundaryName(Handle plugin, int numParams)
@@ -201,7 +199,7 @@ static any Native_Objective_GetId(Handle plugin, int numParams)
     return objective.m_iId;
 }
 
-static any Native_Objective_GetName(Handle plugin, int numParams)
+static void Native_Objective_GetName(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
@@ -215,10 +213,9 @@ static any Native_Objective_GetName(Handle plugin, int numParams)
     char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
     name.ToCharArray(buffer, maxlen);
     SetNativeString(2, buffer, maxlen);
-    return true;
 }
 
-static any Native_Objective_GetDescription(Handle plugin, int numParams)
+static void Native_Objective_GetDescription(Handle plugin, int numParams)
 {
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
@@ -232,7 +229,6 @@ static any Native_Objective_GetDescription(Handle plugin, int numParams)
     char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
     description.ToCharArray(buffer, maxlen);
     SetNativeString(2, buffer, maxlen);
-    return true;
 }
 
 static any Native_Objective_GetEntity(Handle plugin, int numParams)
