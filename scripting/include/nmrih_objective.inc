@@ -103,13 +103,13 @@ methodmap Objective < AddressBase
 
     public native ArrayList GetEntityList();
 
-    // TODO
     /**
      * HasLink returns true if this objective has a link with the given id, false otherwise.
+     *
      * @param linkId    The id of the link to check for.
      * @return          A bool value indicating if this objective has the link.
      */
-    // public native bool HasLink(int linkId);
+    public native bool HasLink(int linkId);
 
     /**
      * GetLink returns the id of a link in this objective's list by its index in the list, or -1 if there is none.

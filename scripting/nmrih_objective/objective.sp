@@ -45,6 +45,7 @@ void LoadObjectiveNative()
     CreateNative("Objective.GetEntity", Native_Objective_GetEntity);
     CreateNative("Objective.GetEntityCount", Native_Objective_GetEntityCount);
     CreateNative("Objective.GetEntityList", Native_Objective_GetEntityList);
+    CreateNative("Objective.HasLink", Native_Objective_HasLink);
     CreateNative("Objective.GetLink", Native_Objective_GetLink);
     CreateNative("Objective.GetLinkCount", Native_Objective_GetLinkCount);
     CreateNative("Objective.IsEndObjective", Native_Objective_IsEndObjective);
@@ -277,6 +278,25 @@ static any Native_Objective_GetEntityList(Handle plugin, int numParams)
     }
 
     return result;
+}
+
+static any Native_Objective_HasLink(Handle plugin, int numParams)
+{
+    Objective objective = GetNativeCell(1);
+
+    int linksCount = objective._iLinksCount; // native 会检查 objective
+    if (linksCount <= 0)
+        return false;
+
+    int linkId = GetNativeCell(2);
+    UtlVector linksVector = objective._pLinksVector;
+    for (int i = 0; i < linksCount; ++i)
+    {
+        if (linksVector.Get(i) == linkId)
+            return true;
+    }
+
+    return false;
 }
 
 static any Native_Objective_GetLink(Handle plugin, int numParams)
