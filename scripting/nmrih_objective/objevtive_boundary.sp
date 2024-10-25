@@ -24,12 +24,12 @@ void LoadObjectiveBoundarySignature(GameData gamedata)
         StartPrepSDKCall(SDKCall_Raw);
         PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveBoundary::Start");
         if ((hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Start] = EndPrepSDKCall()) == INVALID_HANDLE)
-            SetFailState("Failed to load signature CNMRiH_ObjectiveBoundary::Start");
+            SetFailState("Failed to load signature CNMRiH_ObjectiveBoundary::Start.");
     }
 
     StartPrepSDKCall(SDKCall_Raw);
-    PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveBoundary::Finish.");
-    if ((hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Finish] = EndPrepSDKCall()) == null)
+    PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveBoundary::Finish");
+    if ((hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Finish] = EndPrepSDKCall()) == INVALID_HANDLE)
         SetFailState("Failed to load signature CNMRiH_ObjectiveBoundary::Finish.");
 }
 

@@ -89,7 +89,7 @@ void LoadObjectiveSignature(GameData gamedata)
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_Objective::GetObjectiveBoundary");
     PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-    if ((hObjevtiveHandle[HDL_Objective_GetObjectiveBoundary] = EndPrepSDKCall()) == null)
+    if ((hObjevtiveHandle[HDL_Objective_GetObjectiveBoundary] = EndPrepSDKCall()) == INVALID_HANDLE)
         SetFailState("Failed to load signature CNMRiH_Objective::GetObjectiveBoundary.");
 
     StartPrepSDKCall(SDKCall_Raw);
