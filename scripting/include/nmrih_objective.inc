@@ -91,19 +91,17 @@ methodmap Objective < AddressBase
      */
     public native int GetDescription(char[] buffer, int maxlen);
 
+    /**
+     * GetEntity returns the index of an entity in this objective's list by its index in the list, or -1 if there is none.
+     *
+     * @param index     The index of the entity in the list, starting from 0.
+     * @return          The index of the entity in the game world, or -1 if there is no such entity.
+     */
     public native int GetEntity(int index);
 
     public native int GetEntityCount();
 
     // TODO
-    /**
-     * GetEntity returns the name and index of an entity in this objective's list by its index in the list, or "" and -1 if there is none.
-     *
-     * @param index     The index of the entity in the list, starting from 0.
-     * @param buffer    The buffer to store the name of the entity in.
-     * @param maxlen    The maximum length of the buffer.
-     * @return          The index of the entity in the game world, or -1 if there is no such entity.
-     */
     // public native ArrayList GetEntityList();
 
     // TODO
