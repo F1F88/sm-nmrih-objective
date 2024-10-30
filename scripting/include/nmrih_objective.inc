@@ -357,4 +357,9 @@ methodmap ObjectiveManager < AddressBase
      * UpdateObjectiveBoundaries updates the boundaries of all the objectives based on their entities and links.
      */
     public static native void UpdateObjectiveBoundaries();
+
+    public static void FailCurrentObjective()
+    {
+        ObjectiveManager.Instance()._bIsFailed = true;
+    }
 }
