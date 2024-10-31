@@ -39,19 +39,19 @@ void LoadObjectiveNative()
     CreateNative("Objective._bIsAntiObjective.get", Native_Objective_Get__bIsAntiObjective);
     CreateNative("Objective._bIsAntiObjective.set", Native_Objective_Set__bIsAntiObjective);
     CreateNative("Objective._sObjectiveBoundaryName.get", Native_Objective_Get__sObjectiveBoundaryName);
-    CreateNative("Objective.entity.set", Native_Objective_GetId);
-    CreateNative("Objective.GetId", Native_Objective_GetId);
-    CreateNative("Objective.GetName", Native_Objective_GetName);
-    CreateNative("Objective.GetDescription", Native_Objective_GetDescription);
-    CreateNative("Objective.GetEntity", Native_Objective_GetEntity);
-    CreateNative("Objective.GetEntityCount", Native_Objective_GetEntityCount);
-    CreateNative("Objective.GetEntityList", Native_Objective_GetEntityList);
-    CreateNative("Objective.HasLink", Native_Objective_HasLink);
-    CreateNative("Objective.GetLink", Native_Objective_GetLink);
-    CreateNative("Objective.GetLinkCount", Native_Objective_GetLinkCount);
-    CreateNative("Objective.IsEndObjective", Native_Objective_IsEndObjective);
-    CreateNative("Objective.IsAntiObjective", Native_Objective_IsAntiObjective);
-    CreateNative("Objective.GetObjectiveBoundaryName", Native_Objective_GetObjectiveBoundaryName);
+    // CreateNative("Objective.entity.set", Native_Objective_GetId);
+    // CreateNative("Objective.GetId", Native_Objective_GetId);
+    // CreateNative("Objective.GetName", Native_Objective_GetName);
+    // CreateNative("Objective.GetDescription", Native_Objective_GetDescription);
+    // CreateNative("Objective.GetEntity", Native_Objective_GetEntity);
+    // CreateNative("Objective.GetEntityCount", Native_Objective_GetEntityCount);
+    // CreateNative("Objective.GetEntityList", Native_Objective_GetEntityList);
+    // CreateNative("Objective.HasLink", Native_Objective_HasLink);
+    // CreateNative("Objective.GetLink", Native_Objective_GetLink);
+    // CreateNative("Objective.GetLinkCount", Native_Objective_GetLinkCount);
+    // CreateNative("Objective.IsEndObjective", Native_Objective_IsEndObjective);
+    // CreateNative("Objective.IsAntiObjective", Native_Objective_IsAntiObjective);
+    // CreateNative("Objective.GetObjectiveBoundaryName", Native_Objective_GetObjectiveBoundaryName);
     CreateNative("Objective.GetObjectiveBoundary", Native_Objective_GetObjectiveBoundary);
     CreateNative("Objective.UpdateBoundary", Native_Objective_UpdateBoundary);
 }
@@ -202,159 +202,159 @@ static any Native_Objective_Get__sObjectiveBoundaryName(Handle plugin, int numPa
 }
 
 
-static any Native_Objective_GetId(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
-    return objective.m_iId; // native 会检查 objective
-}
+// static any Native_Objective_GetId(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
+//     return objective.m_iId; // native 会检查 objective
+// }
 
-static int Native_Objective_GetName(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
+// static int Native_Objective_GetName(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
 
-    int bytes;
-    Stringt name = objective._sName; // native 会检查 objective
-    if (name.IsNull())
-    {
-        SetNativeString(2, "", 1, _, bytes);
-    }
-    else
-    {
-        int     maxlen = GetNativeCell(3);
-        char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-        name.ToCharArray(buffer, maxlen);
-        SetNativeString(2, buffer, maxlen, _, bytes);
-    }
-    return bytes;
-}
+//     int bytes;
+//     Stringt name = objective._sName; // native 会检查 objective
+//     if (name.IsNull())
+//     {
+//         SetNativeString(2, "", 1, _, bytes);
+//     }
+//     else
+//     {
+//         int     maxlen = GetNativeCell(3);
+//         char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
+//         name.ToCharArray(buffer, maxlen);
+//         SetNativeString(2, buffer, maxlen, _, bytes);
+//     }
+//     return bytes;
+// }
 
-static int Native_Objective_GetDescription(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
+// static int Native_Objective_GetDescription(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
 
-    int bytes;
-    Stringt description = objective._sDescription; // native 会检查 objective
-    if (description.IsNull())
-    {
-        SetNativeString(2, "", 1, _, bytes);
-    }
-    else
-    {
-        int     maxlen = GetNativeCell(3);
-        char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-        description.ToCharArray(buffer, maxlen);
-        SetNativeString(2, buffer, maxlen, _, bytes);
-    }
-    return bytes;
-}
+//     int bytes;
+//     Stringt description = objective._sDescription; // native 会检查 objective
+//     if (description.IsNull())
+//     {
+//         SetNativeString(2, "", 1, _, bytes);
+//     }
+//     else
+//     {
+//         int     maxlen = GetNativeCell(3);
+//         char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
+//         description.ToCharArray(buffer, maxlen);
+//         SetNativeString(2, buffer, maxlen, _, bytes);
+//     }
+//     return bytes;
+// }
 
-static any Native_Objective_GetEntity(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
+// static any Native_Objective_GetEntity(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
 
-    UtlVector entityVector = objective._pEntitysVector; // native 会检查 objective
-    if (entityVector.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
+//     UtlVector entityVector = objective._pEntitysVector; // native 会检查 objective
+//     if (entityVector.IsNull())
+//         ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
 
-    int index  = GetNativeCell(2);
-    int entity = entityVector.Get(index); // UtlVector 会检查 index
+//     int index  = GetNativeCell(2);
+//     int entity = entityVector.Get(index); // UtlVector 会检查 index
 
-    return IsValidEntity(entity) ? entity : -1;
-}
+//     return IsValidEntity(entity) ? entity : -1;
+// }
 
-static any Native_Objective_GetEntityCount(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
-    return objective._iEntitysCount; // native 会检查 objective
-}
+// static any Native_Objective_GetEntityCount(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
+//     return objective._iEntitysCount; // native 会检查 objective
+// }
 
-static any Native_Objective_GetEntityList(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
+// static any Native_Objective_GetEntityList(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
 
-    UtlVector entityVector = objective._pEntitysVector; // native 会检查 objective
-    if (entityVector.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
+//     UtlVector entityVector = objective._pEntitysVector; // native 会检查 objective
+//     if (entityVector.IsNull())
+//         ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
 
-    int size = entityVector.size;
-    ArrayList result = new ArrayList();
+//     int size = entityVector.size;
+//     ArrayList result = new ArrayList();
 
-    for (int i = 0; i < size; ++i)
-    {
-        result.Push(entityVector.Get(i));
-    }
+//     for (int i = 0; i < size; ++i)
+//     {
+//         result.Push(entityVector.Get(i));
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
-static any Native_Objective_HasLink(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
+// static any Native_Objective_HasLink(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
 
-    int linksCount = objective._iLinksCount; // native 会检查 objective
-    if (linksCount <= 0)
-        return false;
+//     int linksCount = objective._iLinksCount; // native 会检查 objective
+//     if (linksCount <= 0)
+//         return false;
 
-    int linkId = GetNativeCell(2);
-    UtlVector linksVector = objective._pLinksVector;
-    for (int i = 0; i < linksCount; ++i)
-    {
-        if (linksVector.Get(i) == linkId)
-            return true;
-    }
+//     int linkId = GetNativeCell(2);
+//     UtlVector linksVector = objective._pLinksVector;
+//     for (int i = 0; i < linksCount; ++i)
+//     {
+//         if (linksVector.Get(i) == linkId)
+//             return true;
+//     }
 
-    return false;
-}
+//     return false;
+// }
 
-static any Native_Objective_GetLink(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
+// static any Native_Objective_GetLink(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
 
-    UtlVector linkVector = objective._pLinksVector; // native 会检查 objective
-    if (linkVector.IsNull())
-        return -1;
+//     UtlVector linkVector = objective._pLinksVector; // native 会检查 objective
+//     if (linkVector.IsNull())
+//         return -1;
 
-    int index = GetNativeCell(2);
-    return linkVector.Get(index); // UtlVector 会检查 index
-}
+//     int index = GetNativeCell(2);
+//     return linkVector.Get(index); // UtlVector 会检查 index
+// }
 
-static any Native_Objective_GetLinkCount(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
-    return objective._iLinksCount; // native 会检查 objective
-}
+// static any Native_Objective_GetLinkCount(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
+//     return objective._iLinksCount; // native 会检查 objective
+// }
 
-static any Native_Objective_IsEndObjective(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
-    return objective._iLinksCount == 0; // native 会检查 objective
-}
+// static any Native_Objective_IsEndObjective(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
+//     return objective._iLinksCount == 0; // native 会检查 objective
+// }
 
-static any Native_Objective_IsAntiObjective(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
-    return objective._bIsAntiObjective; // native 会检查 objective
-}
+// static any Native_Objective_IsAntiObjective(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
+//     return objective._bIsAntiObjective; // native 会检查 objective
+// }
 
-static any Native_Objective_GetObjectiveBoundaryName(Handle plugin, int numParams)
-{
-    Objective objective = GetNativeCell(1);
+// static any Native_Objective_GetObjectiveBoundaryName(Handle plugin, int numParams)
+// {
+//     Objective objective = GetNativeCell(1);
 
-    int bytes;
-    Stringt objectiveBoundaryName = objective._sObjectiveBoundaryName; // native 会检查 objective
-    if (objectiveBoundaryName.IsNull())
-    {
-        SetNativeString(2, "", 1, _, bytes);
-    }
-    else
-    {
-        int     maxlen = GetNativeCell(3);
-        char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-        objectiveBoundaryName.ToCharArray(buffer, maxlen);
-        SetNativeString(2, buffer, maxlen, _, bytes);
-    }
-    return bytes;
-}
+//     int bytes;
+//     Stringt objectiveBoundaryName = objective._sObjectiveBoundaryName; // native 会检查 objective
+//     if (objectiveBoundaryName.IsNull())
+//     {
+//         SetNativeString(2, "", 1, _, bytes);
+//     }
+//     else
+//     {
+//         int     maxlen = GetNativeCell(3);
+//         char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
+//         objectiveBoundaryName.ToCharArray(buffer, maxlen);
+//         SetNativeString(2, buffer, maxlen, _, bytes);
+//     }
+//     return bytes;
+// }
 
 static any Native_Objective_GetObjectiveBoundary(Handle plugin, int numParams)
 {

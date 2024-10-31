@@ -50,19 +50,19 @@ void LoadObjectiveManagerNative()
     CreateNative("ObjectiveManager._pCurrentObjective.get", Native_ObjectiveManager_Get__pCurrentObjective);
     CreateNative("ObjectiveManager._pCurrentObjective.set", Native_ObjectiveManager_Set__pCurrentObjective);
     CreateNative("ObjectiveManager.CompleteCurrentObjective", Native_ObjectiveManager_CompleteCurrentObjective);
-    CreateNative("ObjectiveManager.GetCurrentObjectiveBoundary", Native_ObjectiveManager_GetCurrentObjectiveBoundary);
+    // CreateNative("ObjectiveManager.GetCurrentObjectiveBoundary", Native_ObjectiveManager_GetCurrentObjectiveBoundary);
     CreateNative("ObjectiveManager.Clear", Native_ObjectiveManager_Clear);
     CreateNative("ObjectiveManager.Finish", Native_ObjectiveManager_Finish);
-    CreateNative("ObjectiveManager.GetCurrentObjective", Native_ObjectiveManager_GetCurrentObjective);
-    CreateNative("ObjectiveManager.GetCurrentObjectiveIndex", Native_ObjectiveManager_GetCurrentObjectiveIndex);
+    // CreateNative("ObjectiveManager.GetCurrentObjective", Native_ObjectiveManager_GetCurrentObjective);
+    // CreateNative("ObjectiveManager.GetCurrentObjectiveIndex", Native_ObjectiveManager_GetCurrentObjectiveIndex);
     CreateNative("ObjectiveManager.GetObjectiveById", Native_ObjectiveManager_GetObjectiveById);
-    CreateNative("ObjectiveManager.GetObjectiveByIndex", Native_ObjectiveManager_GetObjectiveByIndex);
+    // CreateNative("ObjectiveManager.GetObjectiveByIndex", Native_ObjectiveManager_GetObjectiveByIndex);
     CreateNative("ObjectiveManager.GetObjectiveByName", Native_ObjectiveManager_GetObjectiveByName);
-    CreateNative("ObjectiveManager.GetObjectiveChain", Native_ObjectiveManager_GetObjectiveChain);
-    CreateNative("ObjectiveManager.GetObjectiveChainCount", Native_ObjectiveManager_GetObjectiveChainCount);
-    CreateNative("ObjectiveManager.GetObjectiveCount", Native_ObjectiveManager_GetObjectiveCount);
-    CreateNative("ObjectiveManager.IsCompleted", Native_ObjectiveManager_IsCompleted);
-    CreateNative("ObjectiveManager.IsFailed", Native_ObjectiveManager_IsFailed);
+    // CreateNative("ObjectiveManager.GetObjectiveChain", Native_ObjectiveManager_GetObjectiveChain);
+    // CreateNative("ObjectiveManager.GetObjectiveChainCount", Native_ObjectiveManager_GetObjectiveChainCount);
+    // CreateNative("ObjectiveManager.GetObjectiveCount", Native_ObjectiveManager_GetObjectiveCount);
+    // CreateNative("ObjectiveManager.IsCompleted", Native_ObjectiveManager_IsCompleted);
+    // CreateNative("ObjectiveManager.IsFailed", Native_ObjectiveManager_IsFailed);
     CreateNative("ObjectiveManager.StartNextObjective", Native_ObjectiveManager_StartNextObjective);
     CreateNative("ObjectiveManager.UpdateObjectiveBoundaries", Native_ObjectiveManager_UpdateObjectiveBoundaries);
 }
@@ -281,11 +281,11 @@ static void Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int 
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], g_pObjectiveManager, targetname);
 }
 
-static any Native_ObjectiveManager_GetCurrentObjectiveBoundary(Handle plugin, int numParams)
-{
-    Objective currentObjective = ObjectiveManager.GetCurrentObjective();
-    return currentObjective.GetObjectiveBoundary();
-}
+// static any Native_ObjectiveManager_GetCurrentObjectiveBoundary(Handle plugin, int numParams)
+// {
+//     Objective currentObjective = ObjectiveManager.GetCurrentObjective();
+//     return currentObjective.GetObjectiveBoundary();
+// }
 
 static void Native_ObjectiveManager_Clear(Handle plugin, int numParams)
 {
@@ -304,26 +304,26 @@ static void Native_ObjectiveManager_Finish(Handle plugin, int numParams)
     }
 }
 
-static any Native_ObjectiveManager_GetCurrentObjective(Handle plugin, int numParams)
-{
-    // 参考自 CNMRiH_ObjectiveManager::ScriptGetObjectiveByIndex 的逆向
-    ObjectiveManager objectiveManager = ObjectiveManager.Instance();
-    int index = objectiveManager._iCurrentObjectiveIndex;
-    int count = objectiveManager._iObjectivesCount;
-    if (index < 0 || index >= count)
-        ThrowNativeError(SP_ERROR_NATIVE, "Invalid objective index (%d) [0-%d].", index, count);
+// static any Native_ObjectiveManager_GetCurrentObjective(Handle plugin, int numParams)
+// {
+//     // 参考自 CNMRiH_ObjectiveManager::ScriptGetObjectiveByIndex 的逆向
+//     ObjectiveManager objectiveManager = ObjectiveManager.Instance();
+//     int index = objectiveManager._iCurrentObjectiveIndex;
+//     int count = objectiveManager._iObjectivesCount;
+//     if (index < 0 || index >= count)
+//         ThrowNativeError(SP_ERROR_NATIVE, "Invalid objective index (%d) [0-%d].", index, count);
 
-    UtlVector chain = objectiveManager._pObjectiveChainVector;
-    if (chain.IsNull())
-        ThrowNativeError(SP_ERROR_NATIVE, "ObjectiveManager._pObjectivesVector is null.");
+//     UtlVector chain = objectiveManager._pObjectiveChainVector;
+//     if (chain.IsNull())
+//         ThrowNativeError(SP_ERROR_NATIVE, "ObjectiveManager._pObjectivesVector is null.");
 
-    return chain.Get(index);
-}
+//     return chain.Get(index);
+// }
 
-static any Native_ObjectiveManager_GetCurrentObjectiveIndex(Handle plugin, int numParams)
-{
-    return ObjectiveManager.Instance()._iCurrentObjectiveIndex;
-}
+// static any Native_ObjectiveManager_GetCurrentObjectiveIndex(Handle plugin, int numParams)
+// {
+//     return ObjectiveManager.Instance()._iCurrentObjectiveIndex;
+// }
 
 static any Native_ObjectiveManager_GetObjectiveById(Handle plugin, int numParams)
 {
@@ -331,15 +331,15 @@ static any Native_ObjectiveManager_GetObjectiveById(Handle plugin, int numParams
     return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveById], g_pObjectiveManager, id);
 }
 
-static any Native_ObjectiveManager_GetObjectiveByIndex(Handle plugin, int numParams)
-{
-    UtlVector objectiveVector = ObjectiveManager.Instance()._pObjectivesVector;
-    if (objectiveVector.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
+// static any Native_ObjectiveManager_GetObjectiveByIndex(Handle plugin, int numParams)
+// {
+//     UtlVector objectiveVector = ObjectiveManager.Instance()._pObjectivesVector;
+//     if (objectiveVector.IsNull())
+//         ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
 
-    int index = GetNativeCell(2);
-    return objectiveVector.Get(index); // UtlVector 会检查 index
-}
+//     int index = GetNativeCell(2);
+//     return objectiveVector.Get(index); // UtlVector 会检查 index
+// }
 
 static any Native_ObjectiveManager_GetObjectiveByName(Handle plugin, int numParams)
 {
@@ -351,46 +351,46 @@ static any Native_ObjectiveManager_GetObjectiveByName(Handle plugin, int numPara
     return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByName], g_pObjectiveManager, name);
 }
 
-static any Native_ObjectiveManager_GetObjectiveChain(Handle plugin, int numParams)
-{
-    UtlVector objectiveChainVector = ObjectiveManager.Instance()._pObjectiveChainVector;
-    if (objectiveChainVector.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
+// static any Native_ObjectiveManager_GetObjectiveChain(Handle plugin, int numParams)
+// {
+//     UtlVector objectiveChainVector = ObjectiveManager.Instance()._pObjectiveChainVector;
+//     if (objectiveChainVector.IsNull())
+//         ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
 
-    int objectiveChainCount = objectiveChainVector.size;
-    ArrayList objectiveChain = new ArrayList();
+//     int objectiveChainCount = objectiveChainVector.size;
+//     ArrayList objectiveChain = new ArrayList();
 
-    for (int i=0; i < objectiveChainCount; ++i)
-    {
-        int id = objectiveChainVector.Get(i);
-        Objective objectiveById = ObjectiveManager.GetObjectiveById(id);
-        if (objectiveById)
-        {
-            objectiveChain.Push(objectiveById);
-        }
-    }
-    return objectiveChain;
-}
+//     for (int i=0; i < objectiveChainCount; ++i)
+//     {
+//         int id = objectiveChainVector.Get(i);
+//         Objective objectiveById = ObjectiveManager.GetObjectiveById(id);
+//         if (objectiveById)
+//         {
+//             objectiveChain.Push(objectiveById);
+//         }
+//     }
+//     return objectiveChain;
+// }
 
-static any Native_ObjectiveManager_GetObjectiveChainCount(Handle plugin, int numParams)
-{
-    return ObjectiveManager.Instance()._iObjectiveChainCount;
-}
+// static any Native_ObjectiveManager_GetObjectiveChainCount(Handle plugin, int numParams)
+// {
+//     return ObjectiveManager.Instance()._iObjectiveChainCount;
+// }
 
-static any Native_ObjectiveManager_GetObjectiveCount(Handle plugin, int numParams)
-{
-    return ObjectiveManager.Instance()._iObjectivesCount;
-}
+// static any Native_ObjectiveManager_GetObjectiveCount(Handle plugin, int numParams)
+// {
+//     return ObjectiveManager.Instance()._iObjectivesCount;
+// }
 
-static any Native_ObjectiveManager_IsCompleted(Handle plugin, int numParams)
-{
-    return ObjectiveManager.Instance()._bIsCompleted;
-}
+// static any Native_ObjectiveManager_IsCompleted(Handle plugin, int numParams)
+// {
+//     return ObjectiveManager.Instance()._bIsCompleted;
+// }
 
-static any Native_ObjectiveManager_IsFailed(Handle plugin, int numParams)
-{
-    return ObjectiveManager.Instance()._bIsFailed;
-}
+// static any Native_ObjectiveManager_IsFailed(Handle plugin, int numParams)
+// {
+//     return ObjectiveManager.Instance()._bIsFailed;
+// }
 
 static void Native_ObjectiveManager_StartNextObjective(Handle plugin, int numParams)
 {
