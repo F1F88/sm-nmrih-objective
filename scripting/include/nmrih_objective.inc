@@ -372,8 +372,5 @@ methodmap ObjectiveManager < AddressBase
      */
     public static native void UpdateObjectiveBoundaries();
 
-    public static void FailCurrentObjective()
-    {
-        ObjectiveManager.Instance()._bIsFailed = true;
-    }
+    public static native void FailCurrentObjective();
 }

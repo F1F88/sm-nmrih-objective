@@ -65,6 +65,7 @@ void LoadObjectiveManagerNative()
     CreateNative("ObjectiveManager.IsFailed", Native_ObjectiveManager_IsFailed);
     CreateNative("ObjectiveManager.StartNextObjective", Native_ObjectiveManager_StartNextObjective);
     CreateNative("ObjectiveManager.UpdateObjectiveBoundaries", Native_ObjectiveManager_UpdateObjectiveBoundaries);
+    CreateNative("ObjectiveManager.FailCurrentObjective", Native_ObjectiveManager_FailCurrentObjective);
 }
 
 void LoadObjectiveManagerAddress(GameData gamedata)
@@ -400,4 +401,9 @@ static void Native_ObjectiveManager_StartNextObjective(Handle plugin, int numPar
 static void Native_ObjectiveManager_UpdateObjectiveBoundaries(Handle plugin, int numParams)
 {
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_UpdateObjectiveBoundaries], g_pObjectiveManager);
+}
+
+static void Native_ObjectiveManager_FailCurrentObjective(Handle plugin, int numParams)
+{
+    ObjectiveManager.Instance()._bIsFailed = true;
 }
