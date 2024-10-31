@@ -43,6 +43,7 @@ void LoadObjectiveNative()
     CreateNative("Objective.GetId", Native_Objective_GetId);
     CreateNative("Objective.GetName", Native_Objective_GetName);
     CreateNative("Objective.GetDescription", Native_Objective_GetDescription);
+    CreateNative("Objective.ContainsEntity", Native_Objective_ContainsEntity);
     CreateNative("Objective.GetEntity", Native_Objective_GetEntity);
     CreateNative("Objective.GetEntityCount", Native_Objective_GetEntityCount);
     CreateNative("Objective.GetEntityList", Native_Objective_GetEntityList);
@@ -246,6 +247,23 @@ static int Native_Objective_GetDescription(Handle plugin, int numParams)
         SetNativeString(2, buffer, maxlen, _, bytes);
     }
     return bytes;
+}
+
+static any Native_Objective_ContainsEntity(Handle plugin, int numParams)
+{
+    Objective objective = GetNativeCell(1);
+
+    int entitysCount = objective._iEntitysCount;
+    if (entitysCount <= 0)
+        return false;
+
+    int entity = GetNativeCell(2);
+    UtlVector entitys = objective._pEntitysVector;
+    for (int i = 0; i < entitysCount; ++i)
+        if (entitys.Get(i) == entity)
+            return true;
+
+    return false;
 }
 
 static any Native_Objective_GetEntity(Handle plugin, int numParams)

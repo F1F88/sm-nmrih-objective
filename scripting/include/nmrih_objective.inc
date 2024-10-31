@@ -91,19 +91,7 @@ methodmap Objective < AddressBase
      */
     public native int GetDescription(char[] buffer, int maxlen);
 
-    public bool ContainsEntity(int entity)
-    {
-        int entitysCount = this._iEntitysCount;
-        if (entitysCount <= 0)
-            return false;
-
-        UtlVector entitys = this._pEntitysVector;
-        for (int i = 0; i < entitysCount; ++i)
-            if (entitys.Get(i) == entity)
-                return true;
-
-        return false;
-    }
+    public native bool ContainsEntity(int entity);
 
     /**
      * GetEntity returns the index of an entity in this objective's list by its index in the list, or -1 if there is none.
