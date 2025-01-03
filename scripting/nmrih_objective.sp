@@ -11,8 +11,8 @@
  * Reference    https://github.com/dysphie/nmo-guard
  *              https://github.com/dysphie/dystopia-servers/blob/2b7f30024efa3315bd16028be47fb8b0c87648ec/addons/sourcemod/scripting/include/nmr_objectives.inc
  */
-#define PLUGIN_NAME        "NMRIH Objective Utils"
-#define PLUGIN_DESCRIPTION "No More Room In Hell objective utils"
+#define PLUGIN_NAME        "Library NMRiH Objective"
+#define PLUGIN_DESCRIPTION "Library NMRiH Objective"
 #define PLUGIN_VERSION     "2.1.0"
 
 public Plugin myinfo =
@@ -74,7 +74,7 @@ public void OnPluginStart()
 
     delete gamedata;
 
-    CreateConVar("sm_nmrih_objective_version", PLUGIN_VERSION, PLUGIN_DESCRIPTION, FCVAR_SPONLY | FCVAR_DONTRECORD);
+    CreateConVar("sm_lib_nmrih_objective_version", PLUGIN_VERSION, PLUGIN_DESCRIPTION, FCVAR_SPONLY | FCVAR_DONTRECORD);
 
     PrintToServer("****************** NMRIH Objective Utils Initialize Complete ******************");
 }
