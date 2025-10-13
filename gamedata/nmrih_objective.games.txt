@@ -162,8 +162,8 @@
             // By Dysphie https://github.com/dysphie/nmo-guard
             "CNMRiH_ObjectiveManager::_pCurrentObjective"
             {
-                "windows"   "120"
-                "linux"     "120"
+                "windows"   "116"
+                "linux"     "116"
             }
         }
 
