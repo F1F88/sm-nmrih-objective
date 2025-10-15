@@ -214,6 +214,19 @@ methodmap ObjectiveManager < AddressBase
     }
 
     /**
+     * @note element type is Anti Objective object address.
+     */
+    property UtlVector _pAntiObjectivesVector
+    {
+        public native get();
+    }
+
+    property int _iAntiObjectivesCount
+    {
+        public native get();
+    }
+
+    /**
      * @note element type is objective id.
      */
     property UtlVector _pObjectiveChainVector
