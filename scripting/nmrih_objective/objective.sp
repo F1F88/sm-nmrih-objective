@@ -304,19 +304,9 @@ static any Native_Objective_GetEntity(Handle plugin, int numParams)
     char sTargetName[256];
     entityName.ToCharArray(sTargetName, sizeof(sTargetName));
 
-    // return null for -1.
+    // return -1 for null.
+    // also when it is not an edict, return an entity reference.
     int entity = SDKCall(hObjevtiveHandle[HDL_FindEntityByName], 0, sTargetName, 0, 0, 0, 0);
-
-    // FIXME: it just sometimes return something more like reference, instead of an index ranged from 0 to 2048.
-    if (entity < -1 || entity > 2048)
-    {
-        entity = EntRefToEntIndex(entity);
-/*
-        // FIXME: something wrong with the ref conversion?
-        if (entity > 2048 + MaxClients)
-            entity -= 2048; // i just gusse.
-*/
-    }
 
     return IsValidEntity(entity) ? entity : -1;
 }
