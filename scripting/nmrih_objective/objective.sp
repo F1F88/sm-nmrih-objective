@@ -274,16 +274,16 @@ static any Native_Objective_ContainsEntity(Handle plugin, int numParams)
     if (entity <= MaxClients || !IsValidEntity(entity))
         ThrowNativeError(SP_ERROR_PARAM, "Invalid entity index %d.", entity);
     
-    char sTargetName[256];
-    GetEntPropString(entity, Prop_Data, "m_iName", sTargetName, sizeof(sTargetName));
+    char targetName[256];
+    GetEntPropString(entity, Prop_Data, "m_iName", targetName, sizeof(targetName));
 
+    char sBuffer[256];
     UtlVector entities = objective._pEntitysVector;
     for (int i = 0; i < entitysCount; ++i)
     {
-        static char sBuffer[256];
         Stringt entityName = entities.Get(i);
         entityName.ToCharArray(sBuffer, sizeof(sBuffer));
-        if (strcmp(sTargetName, sBuffer) == 0)
+        if (strcmp(targetName, sBuffer) == 0)
             return true;
     }
 
