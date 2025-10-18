@@ -25,7 +25,7 @@ enum
 static int    iObjectiveOffset[OFS_Objective_Total];
 static Handle hObjevtiveHandle[HDL_Objective_Total];
 
-#if 0
+/*
 class CNMRiH_Objective                  // size 0x40 / 64
 {
     int m_iID;                          // this
@@ -41,7 +41,7 @@ class CNMRiH_Objective                  // size 0x40 / 64
     const char *m_szObjBoundrayName;    // this + 0x38 / 56
     HSCRIPT m_hScriptInstance;          // this + 0x3C / 60
 }
-#endif
+*/
 
 void LoadObjectiveNative()
 {

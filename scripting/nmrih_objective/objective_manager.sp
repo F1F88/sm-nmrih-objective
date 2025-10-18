@@ -33,7 +33,7 @@ static Address g_pObjectiveManager;
 static int     iObjectiveManagerOffset[OFS_ObjectiveManager_Total];
 static Handle  hObjevtiveManagerHandle[HDL_ObjectiveManager_Total];
 
-#if 0
+/*
 class CNMRiH_ObjectiveManager
 {
     ... // inhirited from CAutoGameSystemPerFrame, 12 bytes.
@@ -58,7 +58,7 @@ class CNMRiH_ObjectiveManager
     CBaseHandle &m_hCurrentObjectiveBoundrayHandle;         // this + 0x78 / 120
     CBaseHandle &m_hExtractionEntityHandle;                 // this + 0x7C / 124
 }
-#endif
+*/
 
 void LoadObjectiveManagerNative()
 {
