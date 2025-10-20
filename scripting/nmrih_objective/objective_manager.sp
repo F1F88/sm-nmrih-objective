@@ -5,8 +5,8 @@ enum    // Offset
 {
     OFS_ObjectiveManager__pObjectivesVector,
     OFS_ObjectiveManager__iObjectivesCount,
-    // OFS_ObjectiveManager__pAntiObjectiveVector, // 暂时用不到, 逆向工程里也没有提供相关的 API
-    // OFS_ObjectiveManager__iAntiObjectiveCount,
+    OFS_ObjectiveManager__pAntiObjectiveVector,
+    OFS_ObjectiveManager__iAntiObjectiveCount,
     OFS_ObjectiveManager__pObjectiveChainVector,
     OFS_ObjectiveManager__iObjectiveChainCount,
     OFS_ObjectiveManager__bIsCompleted,
@@ -33,12 +33,40 @@ static Address g_pObjectiveManager;
 static int     iObjectiveManagerOffset[OFS_ObjectiveManager_Total];
 static Handle  hObjevtiveManagerHandle[HDL_ObjectiveManager_Total];
 
+/*
+class CNMRiH_ObjectiveManager
+{
+    ... // inhirited from CAutoGameSystemPerFrame, 12 bytes.
+
+    CUltVector<CNMRiH_Objective *> m_aObjectiveVector;      // this + 0x14 / 20
+    int m_iObjectivesCount;                                 // this + 0x20 / 32
+
+    CUltVector<CNMRiH_Objective *> m_aAntiObjectiveVector;  // this + 0x28 / 40
+    int m_iAntiObjectivesCount;                             // this + 0x34 / 52
+
+    CultRBTree<string_t> m_pExtractionRBTree;               // this + 0x3C / 60     // CultRBTree size 28
+
+    CUltVector<int> m_aObjectiveChainVector;                // this + 0x58 / 88
+    int m_iObjectiveChainCount;                             // this + 0x64 / 100
+    char unknow3[4];                                        // this + 0x68 / 104
+    bool m_bIsCompleted;                                    // this + 0x6C / 108
+    bool m_bIsFailed;                                       // this + 0x6D / 109
+    bool m_bHasStarted;                                     // this + 0x6E / 110    // indicates wheather currently an objected has been started.
+
+    int m_iCurrentObjectiveIndex;                           // this + 0x70 / 112
+    CNMRiH_Objective *m_pCurrentObjective;                  // this + 0x74 / 116
+    CBaseHandle &m_hCurrentObjectiveBoundrayHandle;         // this + 0x78 / 120
+    CBaseHandle &m_hExtractionEntityHandle;                 // this + 0x7C / 124
+}
+*/
 
 void LoadObjectiveManagerNative()
 {
     CreateNative("ObjectiveManager.Instance", Native_ObjectiveManager_Instance);
     CreateNative("ObjectiveManager._pObjectivesVector.get", Native_ObjectiveManager_Get__pObjectivesVector);
     CreateNative("ObjectiveManager._iObjectivesCount.get", Native_ObjectiveManager_Get__iObjectivesCount);
+    CreateNative("ObjectiveManager._pAntiObjectivesVector.get", Native_ObjectiveManager_Get__pAntiObjectivesVector);
+    CreateNative("ObjectiveManager._iAntiObjectivesCount.get", Native_ObjectiveManager_Get__iAntiObjectivesCount);
     CreateNative("ObjectiveManager._pObjectiveChainVector.get", Native_ObjectiveManager_Get__pObjectiveChainVector);
     CreateNative("ObjectiveManager._iObjectiveChainCount.get", Native_ObjectiveManager_Get__iObjectiveChainCount);
     CreateNative("ObjectiveManager._bIsCompleted.get", Native_ObjectiveManager_Get__bIsCompleted);
@@ -79,8 +107,8 @@ void LoadObjectiveManagerOffset(GameData gamedata)
 {
     LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_pObjectivesVector", OFS_ObjectiveManager__pObjectivesVector);
     LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_iObjectivesCount", OFS_ObjectiveManager__iObjectivesCount);
-    // LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_pAntiObjectiveVector", OFS_ObjectiveManager__pAntiObjectiveVector);
-    // LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_iAntiObjectiveCount", OFS_ObjectiveManager__iAntiObjectiveCount);
+    LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_pAntiObjectiveVector", OFS_ObjectiveManager__pAntiObjectiveVector);
+    LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_iAntiObjectiveCount", OFS_ObjectiveManager__iAntiObjectiveCount);
     LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_pObjectiveChainVector", OFS_ObjectiveManager__pObjectiveChainVector);
     LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_iObjectiveChainCount", OFS_ObjectiveManager__iObjectiveChainCount);
     LoadOffset(gamedata, "CNMRiH_ObjectiveManager::_bIsCompleted", OFS_ObjectiveManager__bIsCompleted);
@@ -176,6 +204,24 @@ static any Native_ObjectiveManager_Get__iObjectivesCount(Handle plugin, int numP
         ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iObjectivesCount], NumberType_Int32);
+}
+
+static any Native_ObjectiveManager_Get__pAntiObjectivesVector(Handle plugin, int numParams)
+{
+    ObjectiveManager objectiveManager = GetNativeCell(1);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+
+    return UtlVector(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pAntiObjectiveVector]);
+}
+
+static any Native_ObjectiveManager_Get__iAntiObjectivesCount(Handle plugin, int numParams)
+{
+    ObjectiveManager objectiveManager = GetNativeCell(1);
+    if (objectiveManager.IsNull())
+        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+
+    return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iAntiObjectiveCount], NumberType_Int32);
 }
 
 static any Native_ObjectiveManager_Get__pObjectiveChainVector(Handle plugin, int numParams)

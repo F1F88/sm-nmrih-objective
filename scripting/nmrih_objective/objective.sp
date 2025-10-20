@@ -25,6 +25,23 @@ enum
 static int    iObjectiveOffset[OFS_Objective_Total];
 static Handle hObjevtiveHandle[HDL_Objective_Total];
 
+/*
+class CNMRiH_Objective                  // size 0x40 / 64
+{
+    int m_iID;                          // this
+    const char *m_szName;               // this + 0x4
+    const char *m_szDesc;               // this + 0x8
+    CUtlVector<string_t> m_aEntityList; // this + 0xC  / 12
+    int m_iEntityCount;                 // this + 0x18 / 24
+
+    CUtlVector<int> m_aLinkList;        // this + 0x20 / 32
+    int m_iLinkCount;                   // this + 0x2C / 44
+
+    bool m_bIsAntiObjective;            // this + 0x34 / 52
+    const char *m_szObjBoundrayName;    // this + 0x38 / 56
+    HSCRIPT m_hScriptInstance;          // this + 0x3C / 60
+}
+*/
 
 void LoadObjectiveNative()
 {

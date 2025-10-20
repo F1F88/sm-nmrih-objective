@@ -107,24 +107,23 @@
                 "linux"     "32"
             }
 
-            // * 暂时用不到, 逆向工程里也没有提供相关的 API
-            // "CNMRiH_ObjectiveManager::_pAntiObjectiveVector"
-            // {
-            //     "windows"   "40"
-            //     "linux"     "40"
-            // }
+            "CNMRiH_ObjectiveManager::_pAntiObjectiveVector"
+            {
+                "windows"   "40"
+                "linux"     "40"
+            }
 
-            // "CNMRiH_ObjectiveManager::_iAntiObjectiveCount"
-            // {
-            //     "windows"   "52"
-            //     "linux"     "52"
-            // }
+            "CNMRiH_ObjectiveManager::_iAntiObjectiveCount"
+            {
+                "windows"   "52"
+                "linux"     "52"
+            }
 
-            // "CNMRiH_ObjectiveManager::_pExtractionRBTree"
-            // {
-            //     "windows"   "60"
-            //     "linux"     "60"
-            // }
+            //"CNMRiH_ObjectiveManager::_pExtractionRBTree"
+            //{
+            //    "windows"   "60"
+            //    "linux"     "60"
+            //}
 
             // By Dysphie https://github.com/dysphie/nmo-guard
             "CNMRiH_ObjectiveManager::_pObjectiveChainVector"
