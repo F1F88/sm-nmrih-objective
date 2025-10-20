@@ -277,13 +277,13 @@ static any Native_Objective_ContainsEntity(Handle plugin, int numParams)
     char targetName[256];
     GetEntPropString(entity, Prop_Data, "m_iName", targetName, sizeof(targetName));
 
-    char sBuffer[256];
+    char buffer[256];
     UtlVector entities = objective._pEntitysVector;
     for (int i = 0; i < entitysCount; ++i)
     {
         Stringt entityName = entities.Get(i);
-        entityName.ToCharArray(sBuffer, sizeof(sBuffer));
-        if (strcmp(targetName, sBuffer) == 0)
+        entityName.ToCharArray(buffer, sizeof(buffer));
+        if (strcmp(targetName, buffer) == 0)
             return true;
     }
 
@@ -301,12 +301,12 @@ static any Native_Objective_GetEntity(Handle plugin, int numParams)
     int index  = GetNativeCell(2);
     Stringt entityName = entityVector.Get(index); // UtlVector 会检查 index
 
-    char sTargetName[256];
-    entityName.ToCharArray(sTargetName, sizeof(sTargetName));
+    char targetName[256];
+    entityName.ToCharArray(targetName, sizeof(targetName));
 
     // return -1 for null.
     // also when it is not an edict, return an entity reference.
-    int entity = SDKCall(hObjevtiveHandle[HDL_FindEntityByName], 0, sTargetName, 0, 0, 0, 0);
+    int entity = SDKCall(hObjevtiveHandle[HDL_FindEntityByName], 0, targetName, 0, 0, 0, 0);
 
     return IsValidEntity(entity) ? entity : -1;
 }
