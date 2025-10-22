@@ -19,6 +19,7 @@ enum
 {
     HDL_Objective_GetObjectiveBoundary,
     HDL_Objective_UpdateBoundary,
+    HDL_FindEntityByName,
     HDL_Objective_Total
 }
 
@@ -56,7 +57,7 @@ void LoadObjectiveNative()
     CreateNative("Objective._bIsAntiObjective.get", Native_Objective_Get__bIsAntiObjective);
     CreateNative("Objective._bIsAntiObjective.set", Native_Objective_Set__bIsAntiObjective);
     CreateNative("Objective._sObjectiveBoundaryName.get", Native_Objective_Get__sObjectiveBoundaryName);
-    CreateNative("Objective.entity.set", Native_Objective_GetId);
+    //CreateNative("Objective.entity.set", Native_Objective_GetId);
     CreateNative("Objective.GetId", Native_Objective_GetId);
     CreateNative("Objective.GetName", Native_Objective_GetName);
     CreateNative("Objective.GetDescription", Native_Objective_GetDescription);
@@ -114,6 +115,18 @@ void LoadObjectiveSignature(GameData gamedata)
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_Objective::UpdateBoundary");
     if ((hObjevtiveHandle[HDL_Objective_UpdateBoundary] = EndPrepSDKCall()) == INVALID_HANDLE)
         SetFailState("Failed to load signature CNMRiH_Objective::UpdateBoundary.");
+
+    StartPrepSDKCall(SDKCall_EntityList);
+    PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CGlobalEntityList::FindEntityByName");
+    PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain, VDECODE_FLAG_ALLOWNULL);  // dose not nedd these parameters. just pass null.
+    PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer, VDECODE_FLAG_ALLOWNULL);
+    PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain, VDECODE_FLAG_ALLOWNULL);
+    PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain, VDECODE_FLAG_ALLOWNULL);
+    PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain, VDECODE_FLAG_ALLOWNULL);
+    PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain, VDECODE_FLAG_ALLOWNULL);
+    PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
+    if ((hObjevtiveHandle[HDL_FindEntityByName] = EndPrepSDKCall()) == INVALID_HANDLE)
+        SetFailState("Failed to load signature CGlobalEntityList::FindEntityByName.");
 }
 
 
@@ -275,10 +288,21 @@ static any Native_Objective_ContainsEntity(Handle plugin, int numParams)
         return false;
 
     int entity = GetNativeCell(2);
-    UtlVector entitys = objective._pEntitysVector;
+    if (entity <= MaxClients || !IsValidEntity(entity))
+        ThrowNativeError(SP_ERROR_PARAM, "Invalid entity index %d.", entity);
+    
+    char targetName[256];
+    GetEntPropString(entity, Prop_Data, "m_iName", targetName, sizeof(targetName));
+
+    char buffer[256];
+    UtlVector entities = objective._pEntitysVector;
     for (int i = 0; i < entitysCount; ++i)
-        if (entitys.Get(i) == entity)
+    {
+        Stringt entityName = entities.Get(i);
+        entityName.ToCharArray(buffer, sizeof(buffer));
+        if (strcmp(targetName, buffer) == 0)
             return true;
+    }
 
     return false;
 }
@@ -292,7 +316,14 @@ static any Native_Objective_GetEntity(Handle plugin, int numParams)
         ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
 
     int index  = GetNativeCell(2);
-    int entity = entityVector.Get(index); // UtlVector 会检查 index
+    Stringt entityName = entityVector.Get(index); // UtlVector 会检查 index
+
+    char targetName[256];
+    entityName.ToCharArray(targetName, sizeof(targetName));
+
+    // return -1 for null.
+    // also when it is not an edict, return an entity reference.
+    int entity = SDKCall(hObjevtiveHandle[HDL_FindEntityByName], 0, targetName, 0, 0, 0, 0);
 
     return IsValidEntity(entity) ? entity : -1;
 }

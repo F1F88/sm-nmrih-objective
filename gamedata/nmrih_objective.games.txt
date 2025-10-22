@@ -271,6 +271,21 @@
                 "linux"     "@_ZN17CObjectivesParser15ParseObjectivesEPKc" // * Note: 此插件不需要
             }
 
+            // windows sig:
+            // search for string "NULL entity in global entity list!\n".
+            // notice the following features:
+            // 1. argument that passed
+            // 2. if ( *String2 == 33 )
+            // 3. contains this function: (CBaseEntity *)CGlobalEntityList::FindEntityProcedural(a1, a3, a4, a5, a6);
+            // since it only pass the string and input entities.
+            "CGlobalEntityList::FindEntityByName"
+            {
+                "library"   "server"
+                "windows"   "\x55\x8B\xEC\x53\x8B\x5D\x2A\x56\x8B\xF1\x85\xDB\x74\x2A\x8A\x03"
+                "linux"     "@_ZN17CGlobalEntityList16FindEntityByNameEP11CBaseEntityPKcS1_S1_S1_P17IEntityFindFilter"
+                /* 55 8B EC 53 8B 5D ? 56 8B F1 85 DB 74 ? 8A 03 */
+            }
+
             // By Dysphie https://github.com/dysphie/nmo-guard
             // Used to find g_ObjectiveManager on Linux.
             "g_ObjectiveManager"

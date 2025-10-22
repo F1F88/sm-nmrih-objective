@@ -103,6 +103,11 @@ methodmap Objective < AddressBase
 
     public native int GetEntityCount();
 
+    /**
+     * Returns an ArrayList filled with `string_t` instances of the entities' targetname.
+     * 
+     * @note            The array handle must be freed manually.
+    */
     public native ArrayList GetEntityList();
 
     /**
