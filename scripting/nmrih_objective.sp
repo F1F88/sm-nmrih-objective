@@ -13,7 +13,7 @@
  */
 #define PLUGIN_NAME        "Library NMRiH Objective"
 #define PLUGIN_DESCRIPTION "Library NMRiH Objective"
-#define PLUGIN_VERSION     "2.1.0"
+#define PLUGIN_VERSION     "2.2.0"
 
 public Plugin myinfo =
 {
