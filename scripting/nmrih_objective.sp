@@ -21,7 +21,7 @@ public Plugin myinfo =
     author      = "F1F88",
     description = PLUGIN_DESCRIPTION,
     version     = PLUGIN_VERSION,
-    url         = "https://github.com/F1F88/"
+    url         = "https://github.com/F1F88/sm-nmrih-objective"
 };
 
 
@@ -51,6 +51,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
+    /* ------- Load GameData ------- */
     GameData gamedata  = new GameData("nmrih_objective.games");
     if (!gamedata)
         SetFailState("Couldn't find nmrih_objective.games gamedata");
@@ -74,7 +75,11 @@ public void OnPluginStart()
 
     delete gamedata;
 
+    /* ------- Load ConVar ------- */
     CreateConVar("sm_lib_nmrih_objective_version", PLUGIN_VERSION, PLUGIN_DESCRIPTION, FCVAR_SPONLY | FCVAR_DONTRECORD);
 
-    PrintToServer("****************** NMRIH Objective Utils Initialize Complete ******************");
+    /* ------- Register Libray ------- */
+    RegPluginLibrary("nmrih_objective");
+
+    PrintToServer("[SM] " ... PLUGIN_NAME ... " (" ... PLUGIN_VERSION ... ") initialize complete!");
 }
