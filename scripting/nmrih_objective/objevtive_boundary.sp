@@ -19,12 +19,16 @@ void LoadObjectiveBoundaryNative()
 
 void LoadObjectiveBoundarySignature(GameData gamedata)
 {
-    if (g_OS == OS_Linux)
+    if (g_eOS == OS_Linux32 || g_eOS == OS_Linux64)
     {
         StartPrepSDKCall(SDKCall_Raw);
         PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveBoundary::Start");
         if ((hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Start] = EndPrepSDKCall()) == INVALID_HANDLE)
             SetFailState("Failed to load signature CNMRiH_ObjectiveBoundary::Start.");
+    }
+    else
+    {
+        LogMessage("Native function CNMRiH_ObjectiveBoundary::Start is unavailable.");
     }
 
     StartPrepSDKCall(SDKCall_Raw);
@@ -36,7 +40,7 @@ void LoadObjectiveBoundarySignature(GameData gamedata)
 
 static void Native_ObjectiveBoundary_Start(Handle plugin, int numParams)
 {
-    if (g_OS == OS_Linux)
+    if (g_eOS == OS_Linux32 || g_eOS == OS_Linux64)
     {
         ObjectiveBoundary objectiveBoundary = GetNativeCell(1);
         if (objectiveBoundary.IsNull())

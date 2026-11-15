@@ -34,8 +34,11 @@
             "OS"
             {
                 "windows"   "0"
-                "linux"     "1"
-                "mac"       "2"
+                "windows64" "1"
+                "linux"     "11"
+                "linux64"   "12"
+                "mac"       "20"
+                "mac64"     "21"
             }
 
             /*** ----- CNMRiH_Objective ----- ***/

@@ -25,15 +25,18 @@ public Plugin myinfo =
 };
 
 
-enum OS
+enum OperatingSystem
 {
-    OS_Windows,
-    OS_Linux,
-    OS_Mac,
-    OS_Total
+    OS_Unknown  = -1,
+    OS_Win32    = 0,
+    OS_Win64    = 1,
+    OS_Linux32  = 10,
+    OS_Linux64  = 11,
+    OS_Mac32    = 20,
+    OS_Mac64    = 21
 }
 
-OS  g_OS;
+OperatingSystem g_eOS;
 
 
 #include "nmrih_objective/objective.sp"
@@ -56,13 +59,13 @@ public void OnPluginStart()
     if (!gamedata)
         SetFailState("Couldn't find nmrih_objective.games gamedata");
 
-    int offset = gamedata.GetOffset("OS");
-    if (offset == -1)
+    g_eOS = view_as<OperatingSystem>(gamedata.GetOffset("OS"));
+    if (g_eOS == OS_Unknown)
         SetFailState("Failed to load offset \"OS\".");
-    else if (offset == 2)
+    else if (g_eOS == OS_Mac32 || g_eOS == OS_Mac64)
         SetFailState("This plugin does not support Mac OS.");
     else
-        g_OS = view_as<OS>(offset);
+        PrintToServer("Read gamedata \"OS\" offset %d.", g_eOS);
 
     LoadObjectiveOffset(gamedata);
     LoadObjectiveSignature(gamedata);

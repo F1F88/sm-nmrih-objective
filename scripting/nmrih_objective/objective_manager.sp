@@ -142,12 +142,16 @@ void LoadObjectiveManagerSignature(GameData gamedata)
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_Clear] = EndPrepSDKCall()) == INVALID_HANDLE)
         SetFailState("Failed to load signature CNMRiH_ObjectiveManager::Clear.");
 
-    if (g_OS == OS_Linux)
+    if (g_eOS == OS_Linux32 || g_eOS == OS_Linux64)
     {
         StartPrepSDKCall(SDKCall_Raw);
         PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::Finish");
         if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_Finish] = EndPrepSDKCall()) == INVALID_HANDLE)
             SetFailState("Failed to load signature CNMRiH_ObjectiveManager::Finish.");
+    }
+    else
+    {
+        LogMessage("Native function CNMRiH_ObjectiveManager::Finish is unavailable.");
     }
 
     StartPrepSDKCall(SDKCall_Raw);
@@ -341,7 +345,7 @@ static void Native_ObjectiveManager_Clear(Handle plugin, int numParams)
 
 static void Native_ObjectiveManager_Finish(Handle plugin, int numParams)
 {
-    if (g_OS == OS_Linux)
+    if (g_eOS == OS_Linux32 || g_eOS == OS_Linux64)
     {
         SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_Finish], g_pObjectiveManager);
     }
