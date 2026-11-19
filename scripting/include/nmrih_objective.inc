@@ -38,7 +38,7 @@ methodmap Objective < AddressBase
         public native get();
     }
 
-    property UtlVector _pEntitysVector
+    property UtlVector /* <Stringt> */ _pEntitysVector
     {
         public native get();
     }
@@ -48,7 +48,7 @@ methodmap Objective < AddressBase
         public native get();
     }
 
-    property UtlVector _pLinksVector
+    property UtlVector /* <int> */ _pLinksVector
     {
         public native get();
     }
@@ -72,22 +72,20 @@ methodmap Objective < AddressBase
     public native int GetId();
 
     /**
-     * GetName returns the name of this objective, or "" if there is none.
+     * Gets the objective name.
      *
-     * @param buffer    The buffer to store the name in.
-     * @param maxlen    The maximum length of the buffer.
-     * @return          The number of bytes written to the buffer, or 0 if there is no name.
-     * @error           Invalid Objective addr.
+     * @param buffer    Buffer to store name.
+     * @param maxlen    Maximum length of the buffer.
+     * @return          Number of bytes written.
      */
     public native int GetName(char[] buffer, int maxlen);
 
     /**
-     * GetDescription returns the description of this objective, or "" if there is none.
+     * Gets the objective description.
      *
-     * @param buffer    The buffer to store the description in.
-     * @param maxlen    The maximum length of the buffer.
-     * @return          The number of bytes written to the buffer, or 0 if there is no description.
-     * @error           Invalid Objective addr.
+     * @param buffer    Buffer to store description.
+     * @param maxlen    Maximum length of the buffer.
+     * @return          Number of bytes written.
      */
     public native int GetDescription(char[] buffer, int maxlen);
 
@@ -104,58 +102,56 @@ methodmap Objective < AddressBase
     public native int GetEntityCount();
 
     /**
-     * Returns an ArrayList filled with `string_t` instances of the entities' targetname.
-     * 
+     * Returns an ArrayList filled with `Stringt` instances of the entities' targetname.
+     *
      * @note            The array handle must be freed manually.
     */
     public native ArrayList GetEntityList();
 
     /**
-     * HasLink returns true if this objective has a link with the given id, false otherwise.
+     * Gets whether this objective has a link with the given id.
      *
      * @param linkId    The id of the link to check for.
-     * @return          A bool value indicating if this objective has the link.
+     * @return          True if this objective has the link, false otherwise.
      */
     public native bool HasLink(int linkId);
 
     /**
-     * GetLink returns the id of a link in this objective's list by its index in the list, or -1 if there is none.
+     * Gets the link id by its index.
+     *
      * A link is an id that connects two objectives together and defines how they are related.
      * For example, a link can indicate that an objective must be completed before another one can start, or that an objective is optional, etc.
      *
-     * @param index     The index of the link in the list, starting from 0.
-     * @return          The id of the link, or -1 if there is no such link.
-     * @error           Invalid Objective addr or index out of bounds.
+     * @param index     Index in the link ids (starting from 0).
+     * @return          The id of the link.
+     * @error           Invalid index.
      */
     public native int GetLink(int index);
 
     public native int GetLinkCount();
 
     /**
-     * IsEndObjective returns true if this objective is the last one in the mission, false otherwise.
+     * Gets whether this objective is the last one in the mission.
      *
-     * @return          A bool value indicating if this objective is the end objective.
-     * @error           Invalid Objective addr.
+     * @return          True if this objective is the end objective, false otherwise.
      */
     public native bool IsEndObjective();
 
     public native bool IsAntiObjective();
 
     /**
-     * Returns name of the current objective boundary, or "" if there is none.
+     * Gets the objective boundary name.
      *
-     * @param buffer    The buffer to store the name in.
-     * @param maxlen    The maximum length of the buffer.
-     * @return          The number of bytes written to the buffer, or 0 if there is no name.
-     * @error           Invalid Objective addr.
+     * @param buffer    Buffer to store objective boundary name.
+     * @param maxlen    Maximum length of the buffer.
+     * @return          Number of bytes written.
      */
     public native int GetObjectiveBoundaryName(char[] buffer, int maxlen);
 
     /**
-     * GetObjectiveBoundary returns the ObjectiveBoundary object of this objective, or null if there is none.
+     * Gets the objective boundary.
      *
-     * @return          An ObjectiveBoundary object or null.
-     * @error           Invalid Objective addr.
+     * @return          An ObjectiveBoundary object or Address_Null.
      */
     public native ObjectiveBoundary GetObjectiveBoundary();
 
@@ -205,10 +201,7 @@ methodmap ObjectiveManager < AddressBase
      */
     public static native ObjectiveManager Instance();
 
-    /**
-     * @note element type is Objective object address.
-     */
-    property UtlVector _pObjectivesVector
+    property UtlVector /* <Objective> */ _pObjectivesVector
     {
         public native get();
     }
@@ -218,10 +211,7 @@ methodmap ObjectiveManager < AddressBase
         public native get();
     }
 
-    /**
-     * @note element type is Anti Objective object address.
-     */
-    property UtlVector _pAntiObjectivesVector
+    property UtlVector /* <Objective> */ _pAntiObjectivesVector
     {
         public native get();
     }
@@ -234,7 +224,7 @@ methodmap ObjectiveManager < AddressBase
     /**
      * @note element type is objective id.
      */
-    property UtlVector _pObjectiveChainVector
+    property UtlVector /* <int> */ _pObjectiveChainVector
     {
         public native get();
     }
@@ -269,7 +259,7 @@ methodmap ObjectiveManager < AddressBase
     }
 
     /**
-     * CompleteCurrentObjective completes the current objective and optionally sets a forced extraction zone (forcedExtractZone).
+     * Completes the current objective and optionally sets a forced extraction zone (forcedExtractZone).
      *
      * @param targetname    The name of the extraction zone to use, or "" for none.
      */
@@ -280,19 +270,19 @@ methodmap ObjectiveManager < AddressBase
      *
      * @note                由于官方移除了这个接口，不保证未来游戏更新后这个 native 仍正常工作
      *
-     * @return              An ObjectiveBoundary object or null.
+     * @return              An ObjectiveBoundary object or Address_Null.
      */
     #pragma deprecated See: https:\/\/github.com/nmrih/source-game/issues/1495
     public static native ObjectiveBoundary GetCurrentObjectiveBoundary();
 
     /**
-     * Clear clears all the objectives and resets the ObjectiveManager state.
+     * Clears all the objectives and resets the ObjectiveManager state.
      */
     public static native void Clear();
 
     // TODO: add windows signature
     /**
-     * Finish finishes the mission and shows the end screen.
+     * Finishes the mission and shows the end screen.
      *
      * @note        Linux only.
      */
@@ -309,7 +299,7 @@ methodmap ObjectiveManager < AddressBase
     public static native int GetCurrentObjectiveIndex();
 
     /**
-     * GetObjectiveById returns the Objective object with the given id, or null if there is none.
+     * Returns the Objective object with the given id, or null if there is none.
      *
      * @param id        The id of the objective to get.
      * @return          An Objective object or null.
@@ -317,7 +307,7 @@ methodmap ObjectiveManager < AddressBase
     public static native Objective GetObjectiveById(int id);
 
     /**
-     * GetObjectiveByIndex returns the Objective object at the given index in the objective list, or null if there is none.
+     * Returns the Objective object at the given index in the objective list, or null if there is none.
      *
      * @param index     The index of the objective to get, starting from 0.
      * @return          An Objective object or null.
@@ -326,7 +316,7 @@ methodmap ObjectiveManager < AddressBase
     public static native Objective GetObjectiveByIndex(int index);
 
     /**
-     * GetObjectiveByName returns the Objective object with the given name, or null if there is none.
+     * Returns the Objective object with the given name, or null if there is none.
      *
      * @param name      The name of the objective to get.
      * @return          An Objective object or null.
@@ -337,6 +327,7 @@ methodmap ObjectiveManager < AddressBase
      * Fills array with current objective chain.
      *
      * @note            The ArrayList element type is Objective.
+     * @note            The ArrayList handle must be freed manually.
      * @note            实际返回的 ArrayList 元素个数可能是 GetObjectiveChainCount - 1
      */
     public static native ArrayList GetObjectiveChain();
@@ -355,26 +346,26 @@ methodmap ObjectiveManager < AddressBase
     public static native int GetObjectiveCount();
 
     /**
-     * IsCompleted returns true if all the objectives are completed, false otherwise.
+     * Returns true if all the objectives are completed, false otherwise.
      *
      * @return          A bool value indicating if all the objectives are completed.
      */
     public static native bool IsCompleted();
 
     /**
-     * IsFailed returns true if any of the objectives are failed, false otherwise.
+     * Returns true if any of the objectives are failed, false otherwise.
      *
      * @return          A bool value indicating if any of the objectives are failed.
      */
     public static native bool IsFailed();
 
     /**
-     * StartNextObjective starts the next objective in the list, if there is any.
+     * Starts the next objective in the list, if there is any.
      */
 	public static native void StartNextObjective();
 
     /**
-     * UpdateObjectiveBoundaries updates the boundaries of all the objectives based on their entities and links.
+     * Updates the boundaries of all the objectives based on their entities and links.
      */
     public static native void UpdateObjectiveBoundaries();
 
