@@ -89,15 +89,16 @@ methodmap Objective < AddressBase
      */
     public native int GetDescription(char[] buffer, int maxlen);
 
-    public native bool ContainsEntity(int entity);
+    public native bool ContainsEntity(Stringt entity);
 
     /**
-     * GetEntity returns the index of an entity in this objective's list by its index in the list, or -1 if there is none.
+     * Gets the entity name by its index.
      *
-     * @param index     The index of the entity in the list, starting from 0.
-     * @return          The index of the entity in the game world, or -1 if there is no such entity.
+     * @param index     Index in the entity names (starting from 0).
+     * @return          Entity name.
+     * @error           Invalid index.
      */
-    public native int GetEntity(int index);
+    public native Stringt GetEntity(int index);
 
     public native int GetEntityCount();
 
