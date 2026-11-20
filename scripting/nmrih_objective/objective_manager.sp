@@ -364,7 +364,7 @@ static any Native_ObjectiveManager_GetCurrentObjective(Handle plugin, int numPar
     if (index < 0 || index >= count)
         ThrowNativeError(SP_ERROR_NATIVE, "Invalid objective index (%d) [0-%d].", index, count);
 
-    UtlVector chain = objectiveManager._pObjectiveChainVector;
+    UtlVector chain = objectiveManager._pObjectivesVector;
     if (chain.IsNull())
         ThrowNativeError(SP_ERROR_NATIVE, "ObjectiveManager._pObjectivesVector is null.");
 
