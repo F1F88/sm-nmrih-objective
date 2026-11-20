@@ -172,13 +172,15 @@
         "Signatures"
         {
             /*** ----- CNMRiH_Objective ----- ***/
+            // windows sig: search for string "WARNING: No objective boundary found named '%s'!\n".
             "CNMRiH_Objective::GetObjectiveBoundary"
             {
                 "library"   "server"
-                "windows"   "\x55\x8B\xEC\x51\x53\x8B\x1D\x2A\x2A\x2A\x2A\x56\x57\x8B\xF9\x33\xF6"
+                "windows"   "\x55\x8B\xEC\x51\x53\x8B\x1D\x2A\x2A\x2A\x2A\x8B\xC1\x56\x33\xF6\x89\x45\xFC\xBA\x2A\x2A\x2A\x2A\x57\x85\xDB\x7E\x2A\x8D\x49\x00\xA1\x2A\x2A\x2A\x2A\x8B\x04\xB0\x85\xC0\x74\x2A\xBA\xFF\x1F\x00\x00\x83\xF8\xFF\x74\x2A\x0F\xB7\xD0\x8B\x0D\x2A\x2A\x2A\x2A\xC1\xE2\x04\x83\xC1\x04\x03\xCA\x74\x2A\xC1\xE8\x10\x39\x41\x04\x75\x2A\x8B\x39\x85\xFF\x74\x2A\x8B\x87\x0C\x01\x00\x00\xBA\x2A\x2A\x2A\x2A\x85\xC0\x8B\xCA\x0F\x45\xC8\x8B\x45\xFC\x8B\x40\x38\x85\xC0\x0F\x45\xD0\x3B\xD1\x74\x2A\x51\x52\xE8\x2A\x2A\x2A\x2A\x83\xC4\x08\x85\xC0\x74\x2A\x8B\x1D\x2A\x2A\x2A\x2A\x46\x3B\xF3\x7C\x2A\x8B\x45\xFC\xBA\x2A\x2A\x2A\x2A\x8B\x40\x38\x85\xC0\x0F\x45\xD0\x52\x68\x2A\x2A\x2A\x2A\xFF\x15\x2A\x2A\x2A\x2A\x83\xC4\x08\x33\xC0\x5F\x5E\x5B\x8B\xE5\x5D\xC3\x8B\xC7"
                 "linux"     "@_ZNK16CNMRiH_Objective20GetObjectiveBoundaryEv"
             }
 
+            // windows sig: search for string "Warning: Trying to set boundary to '%s', entity does not exist!\n".
             "CNMRiH_Objective::UpdateBoundary"
             {
                 "library"   "server"
@@ -187,18 +189,20 @@
             }
 
             /*** ----- CNMRiH_ObjectiveBoundary ----- ***/
+            // 先找 "CNMRiH_ObjectiveManager::StartNextObjective"
             "CNMRiH_ObjectiveBoundary::Start"
             {
                 "library"   "server"
-                // "windows"   "" // TODO
+                "windows"   "\x56\x8B\xF1\x80\xBE\xD4\x03\x00\x00\x01"
                 "linux"     "@_ZN24CNMRiH_ObjectiveBoundary5StartEv"
             }
 
+            // 先找 "CNMRiH_ObjectiveManager::StartNextObjective"
             // By Dysphie https://github.com/dysphie/nmo-guard
             "CNMRiH_ObjectiveBoundary::Finish"
             {
                 "library"   "server"
-                "windows"   "\x55\x8B\xEC\x51\x56\x57\x8B\xF9\xC6\x45\xFF\x00\x8D\x4D\xFF\x8A\x87\xCC\x03\x00\x00"
+                "windows"   "\x56\x8B\xF1\x80\xBE\xD4\x03\x00\x00\x00"
                 "linux"     "@_ZN24CNMRiH_ObjectiveBoundary6FinishEv"
             }
 
@@ -208,7 +212,7 @@
             "CNMRiH_ObjectiveManager::CompleteCurrentObjective"
             {
                 "library"   "server"
-                "windows"   "\x55\x8B\xEC\x51\x56\x57\x8B\xF9\x8B\x0D\x2A\x2A\x2A\x2A"
+                "windows"   "\x55\x8B\xEC\x8B\x45\x08\x56\x8B\xF1\x8B\x0D\x2A\x2A\x2A\x2A"
                 "linux"     "@_ZN23CNMRiH_ObjectiveManager24CompleteCurrentObjectiveE8string_t"
             }
 
@@ -216,7 +220,7 @@
             "CNMRiH_ObjectiveManager::Clear"
             {
                 "library"   "server"
-                "windows"   "\x56\x8B\xF1\x57\x8D\x4E\x14"
+                "windows"   "\x55\x8B\xEC\x8B\x45\x08\x85\xC0\x74\x2A\x80\x38\x00\x75\x2A\x33\xC0\x56"
                 "linux"     "@_ZN23CNMRiH_ObjectiveManager5ClearEv"
             }
 
@@ -230,30 +234,49 @@
             "CNMRiH_ObjectiveManager::GetObjectiveById"
             {
                 "library"   "server"
-                "windows"   "\x55\x8B\xEC\x56\x8B\x71\x20"
+                "windows"   "\x55\x8B\xEC\x56\x8B\xF1\x33\xC0\x57"
                 "linux"     "@_ZNK23CNMRiH_ObjectiveManager16GetObjectiveByIdEi"
             }
 
-            // * Note: 由于找不到 windows sig, 所以用 sp 代码模拟原函数逻辑来实现
-            // "CNMRiH_ObjectiveManager::GetObjectiveByIndex"
-            // {
-            //     "library"   "server"
-            //     // "windows"   ""
-            //     "linux"     "@_ZNK23CNMRiH_ObjectiveManager19GetObjectiveByIndexEi"
-            // }
+            "CNMRiH_ObjectiveManager::GetObjectiveByIndex"
+            {
+                "library"   "server"
+                "windows"   "\x55\x8B\xEC\x8B\x55\x08\x85\xD2\x78\x2A\x3B\x51\x20"
+                "linux"     "@_ZNK23CNMRiH_ObjectiveManager19GetObjectiveByIndexEi"
+            }
 
+            // windows sig:
+            // 1. search for string "ScriptGetObjectiveByName".
+            // 2. CNMRiH_ObjectiveManager::ScriptGetObjectiveByName
+            // 3. CNMRiH_ObjectiveManager::GetObjectiveByName
             "CNMRiH_ObjectiveManager::GetObjectiveByName"
             {
                 "library"   "server"
-                "windows"   "\x55\x8B\xEC\x83\xEC\x08\x53\x8B\xD9\x56\x33\xF6\x57\x39\x73\x20"
+                "windows"   "\x55\x8B\xEC\x83\xEC\x0C\x53\x56\x8B\x75\x08\x8B\xC1"
                 "linux"     "@_ZNK23CNMRiH_ObjectiveManager18GetObjectiveByNameE8string_t"
             }
 
             // By Dysphie https://github.com/dysphie/nmo-guard
+            // windows sig:
+            // 1. search for string "Objective %s has nonexistent boundary %s!\n".
+            // 2. Or first search for the string "ScriptStartNextObjective" to find
+            //    "CNMRiH_ObjectiveManager::ScriptStartNextObjective"
+            //    Internally, it calls
+            //          "CNMRiH_ObjectiveBoundary::Finish"
+            //          "CNMRiH_Objective::IsEndObjective"
+            //          "CNMRiH_ObjectiveManager::StartNextObjective"
+            // 3. "CNMRiH_ObjectiveManager::StartNextObjective" Internally, it calls
+            //      CNMRiH_Objective::GetName
+            //      CNMRiH_Objective::GetObjectiveBoundary
+            //      CNMRiH_Objective::GetDescription
+            //      CNMRiH_ObjectiveManager::SendObjectiveNotify
+            //      CNMRiH_ObjectiveBoundary::Start
+            //      CNMRiH_Objective::GetObjectiveBoundaryName
+            //      CExtractionPoint::Start
             "CNMRiH_ObjectiveManager::StartNextObjective"
             {
                 "library"   "server"
-                "windows"   "\x55\x8B\xEC\x83\xEC\x2C\x53\x56\x57\x8B\xF9\x89\x7D\xF8"
+                "windows"   "\x55\x8B\xEC\x83\xEC\x0C\x53\x56\x8B\xF1\x57\x8B\x7E\x70"
                 "linux"     "@_ZN23CNMRiH_ObjectiveManager18StartNextObjectiveEv"
             }
 
@@ -270,7 +293,7 @@
             "ObjectivesParser::ParseObjectives"
             {
                 "library"   "server"
-                "windows"   "\x55\x8B\xEC\x81\xEC\x40\x02\x00\x00\xB9\x2A\x2A\x2A\x2A"
+                "windows"   "\x55\x8B\xEC\x81\xEC\x3C\x02\x00\x00\xB9\x2A\x2A\x2A\x2A"
                 "linux"     "@_ZN17CObjectivesParser15ParseObjectivesEPKc" // * Note: 此插件不需要
             }
 

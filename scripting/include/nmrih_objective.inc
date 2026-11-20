@@ -174,11 +174,8 @@ methodmap ObjectiveBoundary < AddressBase
         return view_as<ObjectiveBoundary>(addr);
     }
 
-    // TODO: add windows signature
     /**
      * Finish finishes the boundary and removes any effects or markers associated with it.
-     *
-     * @note        Linux only.
      */
 	public native void Start();
 

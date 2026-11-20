@@ -22,7 +22,7 @@ enum    // Signature
     HDL_ObjectiveManager_Clear,
     HDL_ObjectiveManager_Finish,
     HDL_ObjectiveManager_GetObjectiveById,
-    // HDL_ObjectiveManager_GetObjectiveByIndex, // * Note: 由于找不到 windows sig, 所以改用 sp 模拟内部逻辑来实现
+    HDL_ObjectiveManager_GetObjectiveByIndex,
     HDL_ObjectiveManager_GetObjectiveByName,
     HDL_ObjectiveManager_StartNextObjective,
     HDL_ObjectiveManager_UpdateObjectiveBoundaries,
@@ -161,12 +161,12 @@ void LoadObjectiveManagerSignature(GameData gamedata)
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveById] = EndPrepSDKCall()) == INVALID_HANDLE)
         SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveById.");
 
-    // StartPrepSDKCall(SDKCall_Raw);
-    // PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::GetObjectiveByIndex");
-    // PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-    // PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-    // if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByIndex] = EndPrepSDKCall()) == INVALID_HANDLE)
-    //     SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveByIndex");
+    StartPrepSDKCall(SDKCall_Raw);
+    PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::GetObjectiveByIndex");
+    PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+    PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+    if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByIndex] = EndPrepSDKCall()) == INVALID_HANDLE)
+        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveByIndex");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::GetObjectiveByName");
@@ -384,12 +384,8 @@ static any Native_ObjectiveManager_GetObjectiveById(Handle plugin, int numParams
 
 static any Native_ObjectiveManager_GetObjectiveByIndex(Handle plugin, int numParams)
 {
-    UtlVector objectiveVector = ObjectiveManager.Instance()._pObjectivesVector;
-    if (objectiveVector.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
-
-    int index = GetNativeCell(2);
-    return objectiveVector.Get(index); // UtlVector 会检查 index
+    int index = GetNativeCell(1);
+    return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByIndex], g_pObjectiveManager, index);
 }
 
 static any Native_ObjectiveManager_GetObjectiveByName(Handle plugin, int numParams)
