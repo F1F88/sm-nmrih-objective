@@ -1,0 +1,120 @@
+name: Build plugin - nmrih_player
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripting/**'
+      - 'gamedata/**'
+      - '.github/workflows/**'
+  push:
+    paths:
+      - 'scripting/**'
+      - 'gamedata/**'
+      - '.github/workflows/**'
+  workflow_call:
+    inputs:
+      source_ref:
+        required: false
+        type: string
+
+jobs:
+  build:
+    name: build with ${{ matrix.sm_version }} ${{ matrix.variant }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sm_version: [sm_1_13, sm_1_12, sm_1_11]
+        variant: [extension, header_only]
+        include:
+          - sm_version: sm_1_13
+            sm_ref: "1.13.x"
+          - sm_version: sm_1_12
+            sm_ref: "1.12.x"
+          - sm_version: sm_1_11
+            sm_ref: "1.11.x"
+        exclude:
+          - sm_version: sm_1_11
+            variant: extension
+
+    steps:
+      - name: Check out Log4sp
+        uses: actions/checkout@v6
+        with:
+          repository: F1F88/sm-ext-log4sp
+          path: log4sp
+          ref: v2.0.0
+
+      - name: Check out sm-workspace
+        uses: actions/checkout@v6
+        with:
+          repository: F1F88/sm-workspace
+          path: sm-workspace
+
+      - name: Check out NMRiH Objective
+        uses: actions/checkout@v6
+        with:
+          path: nmrih_objective
+          ref: ${{ inputs.source_ref || github.ref }}
+
+      - name: Setup SourcePawn Compiler
+        id: setup_sp
+        uses: rumblefrog/setup-sp@master
+        with:
+          version-file: nmrih_objective/scripting/nmrih_objective.sp
+          define-name: PLUGIN_VERSION
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ matrix.sm_ref }}
+
+      - name: Compile plugin
+        working-directory: nmrih_objective
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          OUTPUT_DIR="build/nmrih_objective.plugin"
+          mkdir -p "$OUTPUT_DIR"
+
+          COMPILE_ARGS=(
+            "scripting/nmrih_objective.sp"
+            -i "scripting/include"
+            -i "scripting/nmrih_objective"
+            -i "${{ github.workspace }}/log4sp/sourcemod/scripting/include"
+            -i "${{ github.workspace }}/sm-workspace/inc"
+            -o "$OUTPUT_DIR/nmrih_objective.smx"
+            -E
+            "NDEBUG="
+          )
+
+          if [[ "${{ matrix.variant }}" == "header_only" ]]; then
+            COMPILE_ARGS+=("LOG4SP_HEADER_ONLY=")
+          fi
+
+          spcomp "${COMPILE_ARGS[@]}"
+
+      - name: Package
+        id: package
+        shell: bash
+        working-directory: nmrih_objective
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          mkdir -p "build/package/addons/sourcemod/plugins"
+          mkdir -p "build/package/addons/sourcemod/scripting"
+          mkdir -p "build/package/addons/sourcemod/gamedata"
+
+          cp "build/nmrih_objective.plugin/nmrih_objective.smx" "build/package/addons/sourcemod/plugins/"
+          cp -r "scripting/include" "build/package/addons/sourcemod/scripting/"
+          cp -r "gamedata" "build/package/addons/sourcemod/gamedata/"
+
+          echo "short_hash=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          name: sm-plugin-nmrih_objective-v${{ steps.setup_sp.outputs.plugin-version }}.${{ steps.package.outputs.short_hash }}-${{ matrix.sm_version }}-${{ matrix.variant }}
+          path: nmrih_objective/build/package
+          if-no-files-found: error

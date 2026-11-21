@@ -77,7 +77,7 @@ void LoadObjectiveNative()
 void LoadObjectiveOffset(GameData gamedata)
 {
     if (!gamedata)
-        SetFailState("Invalid param gamedata.");
+        g_hLogger.Fatal("Invalid param gamedata.");
 
     LoadOffset(gamedata, "CNMRiH_Objective::m_iId", OFS_Objective_m_iId);
     LoadOffset(gamedata, "CNMRiH_Objective::_sName", OFS_Objective__sName);
@@ -93,13 +93,14 @@ void LoadObjectiveOffset(GameData gamedata)
 static void LoadOffset(GameData gamedata, const char[] key, int index)
 {
     if (index < 0 || index >= OFS_Objective_Total)
-        SetFailState("Invalid iObjectiveOffset index %d.", index);
+        g_hLogger.FatalF("Invalid iObjectiveOffset index %d.", index);
 
     int offset = gamedata.GetOffset(key);
     if (offset == -1)
-        SetFailState("Failed to load offset \"%s\".", key);
+        g_hLogger.FatalF("Failed to load offset \"%s\".", key);
 
     iObjectiveOffset[index] = offset;
+    g_hLogger.TraceF("Load %s offset %d.", key, offset);
 }
 
 void LoadObjectiveSignature(GameData gamedata)
@@ -108,113 +109,174 @@ void LoadObjectiveSignature(GameData gamedata)
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_Objective::GetObjectiveBoundary");
     PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
     if ((hObjevtiveHandle[HDL_Objective_GetObjectiveBoundary] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_Objective::GetObjectiveBoundary.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_Objective::GetObjectiveBoundary.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_Objective::GetObjectiveBoundary.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_Objective::UpdateBoundary");
     if ((hObjevtiveHandle[HDL_Objective_UpdateBoundary] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_Objective::UpdateBoundary.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_Objective::UpdateBoundary.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_Objective::UpdateBoundary.");
 }
 
 
 
 static any Native_Objective_Get_m_iId(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.m_iId.get called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance addr is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return 0;
+    }
 
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective_m_iId], NumberType_Int32);
 }
 
 static void Native_Objective_Set_m_iId(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.m_iId.set called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance addr is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return;
+    }
 
     int value = GetNativeCell(2);
+    g_hLogger.DebugF("Param value %d.", value);
     StoreToAddress(objective.addr + iObjectiveOffset[OFS_Objective_m_iId], value, NumberType_Int32);
 }
 
 static any Native_Objective_Get__sName(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective._sName.get called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance addr is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return Address_Null;
+    }
 
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective__sName], NumberType_Int32);
 }
 
 static any Native_Objective_Get__sDescription(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective._sDescription.get called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return Address_Null;
+    }
 
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective__sDescription], NumberType_Int32);
 }
 
 static any Native_Objective_Get__pEntitysVector(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective._pEntitysVector.get called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return Address_Null;
+    }
 
     return UtlVector(objective.addr + iObjectiveOffset[OFS_Objective__pEntitysVector]);
 }
 
 static any Native_Objective_Get__iEntitysCount(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective._iEntitysCount.get called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return 0;
+    }
 
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective__iEntitysCount], NumberType_Int32);
 }
 
 static any Native_Objective_Get__pLinksVector(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective._pLinksVector.get called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return Address_Null;
+    }
 
     return UtlVector(objective.addr + iObjectiveOffset[OFS_Objective__pLinksVector]);
 }
 
 static any Native_Objective_Get__iLinksCount(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective._iLinksCount.get called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return 0;
+    }
 
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective__iLinksCount], NumberType_Int32);
 }
 
 static any Native_Objective_Get__bIsAntiObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective._bIsAntiObjective.get called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return false;
+    }
 
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective__bIsAntiObjective], NumberType_Int8);
 }
 
 static void Native_Objective_Set__bIsAntiObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective._bIsAntiObjective.set called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return;
+    }
 
     bool value = GetNativeCell(2);
+    g_hLogger.DebugF("Param value %s.", value ? "true" : "false");
     StoreToAddress(objective.addr + iObjectiveOffset[OFS_Objective__bIsAntiObjective], value, NumberType_Int8);
 }
 
 static any Native_Objective_Get__sObjectiveBoundaryName(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective._sObjectiveBoundaryName.get called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return Address_Null;
+    }
 
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective__sObjectiveBoundaryName], NumberType_Int32);
 }
@@ -222,67 +284,120 @@ static any Native_Objective_Get__sObjectiveBoundaryName(Handle plugin, int numPa
 
 static any Native_Objective_GetId(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.GetId called.");
+
     Objective objective = GetNativeCell(1);
-    return objective.m_iId; // native 会检查 objective
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return 0;
+    }
+
+    return objective.m_iId;
 }
 
 static int Native_Objective_GetName(Handle plugin, int numParams)
 {
-    Objective objective = GetNativeCell(1);
+    g_hLogger.Debug("Objective.GetName called.");
 
-    int bytes;
-    Stringt name = objective._sName; // native 会检查 objective
+    Objective objective = GetNativeCell(1);
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        SetNativeString(2, "", 1);
+        return 0;
+    }
+
+    Stringt name = objective._sName;
     if (name.IsNull())
     {
-        SetNativeString(2, "", 1, _, bytes);
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective._sName is null.");
+        SetNativeString(2, "", 1);
+        return 0;
     }
-    else
+
+    int maxlen = GetNativeCell(3);
+    if (maxlen <= 0)
     {
-        int     maxlen = GetNativeCell(3);
-        char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-        name.ToCharArray(buffer, maxlen);
-        SetNativeString(2, buffer, maxlen, _, bytes);
+        g_hLogger.LogStackTraceF(LogLevel_Warn, "Invalid maxlen %d.", maxlen);
+        SetNativeString(2, "", 1);
+        return 0;
     }
+
+    char[] buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
+    name.ToCharArray(buffer, maxlen);
+
+    int bytes;
+    SetNativeString(2, buffer, maxlen, _, bytes);
     return bytes;
 }
 
 static int Native_Objective_GetDescription(Handle plugin, int numParams)
 {
-    Objective objective = GetNativeCell(1);
+    g_hLogger.Debug("Objective.GetDescription called.");
 
-    int bytes;
-    Stringt description = objective._sDescription; // native 会检查 objective
+    Objective objective = GetNativeCell(1);
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        SetNativeString(2, "", 1);
+        return 0;
+    }
+
+    Stringt description = objective._sDescription;
     if (description.IsNull())
     {
-        SetNativeString(2, "", 1, _, bytes);
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective._sDescription is null.");
+        SetNativeString(2, "", 1);
+        return 0;
     }
-    else
+
+    int maxlen = GetNativeCell(3);
+    if (maxlen <= 0)
     {
-        int     maxlen = GetNativeCell(3);
-        char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-        description.ToCharArray(buffer, maxlen);
-        SetNativeString(2, buffer, maxlen, _, bytes);
+        g_hLogger.LogStackTraceF(LogLevel_Warn, "Invalid maxlen %d.", maxlen);
+        SetNativeString(2, "", 1);
+        return 0;
     }
+
+    char[] buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
+    description.ToCharArray(buffer, maxlen);
+
+    int bytes;
+    SetNativeString(2, buffer, maxlen, _, bytes);
     return bytes;
 }
 
 static any Native_Objective_ContainsEntity(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.ContainsEntity called.");
+
     Objective objective = GetNativeCell(1);
-
-    int entitysCount = objective._iEntitysCount;
-    if (entitysCount <= 0)
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
         return false;
+    }
 
-    char target[256];
-    view_as<Stringt>(GetNativeCell(2)).ToCharArray(target, sizeof(target));
+    UtlVector entityVector = objective._pEntitysVector;
+    if (entityVector.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective._pEntitysVector is null.");
+        return false;
+    }
+
+    char entity[256];
+    view_as<Stringt>(GetNativeCell(2)).ToCharArray(entity, sizeof(entity));
+    g_hLogger.DebugF("Param entity %s.", entity);
 
     char buffer[256];
-    UtlVector entities = objective._pEntitysVector;
-    for (int i = 0; i < entitysCount; ++i)
+    int size = entityVector.size;
+    for (int i = 0; i < size; ++i)
     {
-        view_as<Stringt>(entities.Get(i)).ToCharArray(buffer, sizeof(buffer));
-        if (strcmp(target, buffer) == 0)
+        view_as<Stringt>(entityVector.Get(i)).ToCharArray(buffer, sizeof(buffer));
+        g_hLogger.DebugF("element [%d/%d] %s.", i, size, buffer);
+
+        if (strcmp(entity, buffer) == 0)
             return true;
     }
 
@@ -291,39 +406,82 @@ static any Native_Objective_ContainsEntity(Handle plugin, int numParams)
 
 static any Native_Objective_GetEntity(Handle plugin, int numParams)
 {
-    Objective objective = GetNativeCell(1);
+    g_hLogger.Debug("Objective.GetEntity called.");
 
-    UtlVector entityVector = objective._pEntitysVector; // native 会检查 objective
+    Objective objective = GetNativeCell(1);
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return Address_Null;
+    }
+
+    UtlVector entityVector = objective._pEntitysVector;
     if (entityVector.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective._pEntitysVector is null.");
+        return Address_Null;
+    }
 
     int index = GetNativeCell(2);
     if (index < 0 || index >= entityVector.size)
-        ThrowNativeError(SP_ERROR_PARAM, "Invalid index %d. [0-%d)", index, entityVector.size);
+    {
+        g_hLogger.LogStackTraceF(LogLevel_Warn, "Invalid index %d. [0-%d)", index, entityVector.size);
+        return Address_Null;
+    }
+    else
+    {
+        g_hLogger.DebugF("Param index %d.", index);
+    }
 
     return entityVector.Get(index);
 }
 
 static any Native_Objective_GetEntityCount(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.GetEntityCount called.");
+
     Objective objective = GetNativeCell(1);
-    return objective._iEntitysCount; // native 会检查 objective
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return 0;
+    }
+
+    return objective._iEntitysCount;
 }
 
 static any Native_Objective_GetEntityList(Handle plugin, int numParams)
 {
-    Objective objective = GetNativeCell(1);
+    g_hLogger.Debug("Objective.GetEntityList called.");
 
-    UtlVector entityVector = objective._pEntitysVector; // native 会检查 objective
+    Objective objective = GetNativeCell(1);
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return INVALID_HANDLE;
+    }
+
+    UtlVector entityVector = objective._pEntitysVector;
     if (entityVector.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective._pEntitysVector is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective._pEntitysVector is null.");
+        return INVALID_HANDLE;
+    }
 
     int size = entityVector.size;
     ArrayList result = new ArrayList();
 
     for (int i = 0; i < size; ++i)
     {
-        result.Push(entityVector.Get(i));
+        Stringt entity = entityVector.Get(i);
+        if (g_hLogger.ShouldLog(LogLevel_Debug))
+        {
+            char buffer[256];
+            entity.ToCharArray(buffer, sizeof(buffer));
+            g_hLogger.DebugF("element [%d/%d] %s.", i, size, buffer);
+        }
+
+        result.Push(entity);
     }
 
     return result;
@@ -331,17 +489,32 @@ static any Native_Objective_GetEntityList(Handle plugin, int numParams)
 
 static any Native_Objective_HasLink(Handle plugin, int numParams)
 {
-    Objective objective = GetNativeCell(1);
+    g_hLogger.Debug("Objective.HasLink called.");
 
-    int linksCount = objective._iLinksCount; // native 会检查 objective
-    if (linksCount <= 0)
+    Objective objective = GetNativeCell(1);
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
         return false;
+    }
+
+    UtlVector linksVector = objective._pLinksVector;
+    if (linksVector.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective.linksVector is null.");
+        return false;
+    }
 
     int linkId = GetNativeCell(2);
-    UtlVector linksVector = objective._pLinksVector;
-    for (int i = 0; i < linksCount; ++i)
+    g_hLogger.DebugF("Param linkId %d.", linkId);
+
+    int size = linksVector.size;
+    for (int i = 0; i < size; ++i)
     {
-        if (linksVector.Get(i) == linkId)
+        int id = linksVector.Get(i);
+        g_hLogger.DebugF("element [%d/%d] %d.", i, size, id);
+
+        if (id == linkId)
             return true;
     }
 
@@ -350,59 +523,125 @@ static any Native_Objective_HasLink(Handle plugin, int numParams)
 
 static any Native_Objective_GetLink(Handle plugin, int numParams)
 {
-    Objective objective = GetNativeCell(1);
+    g_hLogger.Debug("Objective.GetLink called.");
 
-    UtlVector linkVector = objective._pLinksVector; // native 会检查 objective
-    if (linkVector.IsNull())
+    Objective objective = GetNativeCell(1);
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
         return -1;
+    }
+
+    UtlVector linkVector = objective._pLinksVector;
+    if (linkVector.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective._pLinksVector is null.");
+        return -1;
+    }
 
     int index = GetNativeCell(2);
-    return linkVector.Get(index); // UtlVector 会检查 index
+    if (index < 0 || index >= linkVector.size)
+    {
+        g_hLogger.LogStackTraceF(LogLevel_Warn, "Invalid index %d. [0-%d)", index, linkVector.size);
+        return -1;
+    }
+    else
+    {
+        g_hLogger.DebugF("Param index %d.", index);
+    }
+
+    return linkVector.Get(index);
 }
 
 static any Native_Objective_GetLinkCount(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.GetLinkCount called.");
+
     Objective objective = GetNativeCell(1);
-    return objective._iLinksCount; // native 会检查 objective
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return 0;
+    }
+
+    return objective._iLinksCount;
 }
 
 static any Native_Objective_IsEndObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.IsEndObjective called.");
+
     Objective objective = GetNativeCell(1);
-    return objective._iLinksCount == 0; // native 会检查 objective
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return false;
+    }
+
+    return objective._iLinksCount == 0;
 }
 
 static any Native_Objective_IsAntiObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.IsAntiObjective called.");
+
     Objective objective = GetNativeCell(1);
-    return objective._bIsAntiObjective; // native 会检查 objective
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return false;
+    }
+
+    return objective._bIsAntiObjective;
 }
 
 static any Native_Objective_GetObjectiveBoundaryName(Handle plugin, int numParams)
 {
-    Objective objective = GetNativeCell(1);
+    g_hLogger.Debug("Objective.GetObjectiveBoundaryName called.");
 
-    int bytes;
-    Stringt objectiveBoundaryName = objective._sObjectiveBoundaryName; // native 会检查 objective
+    Objective objective = GetNativeCell(1);
+    if (objective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        SetNativeString(2, "", 1);
+        return 0;
+    }
+
+    Stringt objectiveBoundaryName = objective._sObjectiveBoundaryName;
     if (objectiveBoundaryName.IsNull())
     {
-        SetNativeString(2, "", 1, _, bytes);
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective._sObjectiveBoundaryName is null.");
+        SetNativeString(2, "", 1);
+        return 0;
     }
-    else
+
+
+    int maxlen = GetNativeCell(3);
+    if (maxlen <= 0)
     {
-        int     maxlen = GetNativeCell(3);
-        char[]  buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
-        objectiveBoundaryName.ToCharArray(buffer, maxlen);
-        SetNativeString(2, buffer, maxlen, _, bytes);
+        g_hLogger.LogStackTraceF(LogLevel_Warn, "Invalid maxlen %d.", maxlen);
+        SetNativeString(2, "", 1);
+        return 0;
     }
+
+    char[] buffer = new char[maxlen]; // 不需要扩容, 按照传入的最大长度限制写入
+    objectiveBoundaryName.ToCharArray(buffer, maxlen);
+
+    int bytes;
+    SetNativeString(2, buffer, maxlen, _, bytes);
     return bytes;
 }
 
 static any Native_Objective_GetObjectiveBoundary(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.GetObjectiveBoundary called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return Address_Null;
+    }
 
     ObjectiveBoundary objectiveBoundary = SDKCall(hObjevtiveHandle[HDL_Objective_GetObjectiveBoundary], objective.addr);
     return objectiveBoundary;
@@ -410,9 +649,14 @@ static any Native_Objective_GetObjectiveBoundary(Handle plugin, int numParams)
 
 static void Native_Objective_UpdateBoundary(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("Objective.UpdateBoundary called.");
+
     Objective objective = GetNativeCell(1);
     if (objective.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "Objective instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
+        return;
+    }
 
     SDKCall(hObjevtiveHandle[HDL_Objective_UpdateBoundary], objective.addr);
 }

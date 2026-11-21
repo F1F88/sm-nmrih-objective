@@ -100,7 +100,9 @@ void LoadObjectiveManagerAddress(GameData gamedata)
 {
     g_pObjectiveManager = gamedata.GetAddress("CNMRiH_ObjectiveManager");
     if (g_pObjectiveManager == Address_Null)
-        SetFailState("Failed to load address CNMRiH_ObjectiveManager.");
+        g_hLogger.Fatal("Failed to load address CNMRiH_ObjectiveManager.");
+    else
+        g_hLogger.TraceF("Load CNMRiH_ObjectiveManager address %d.", g_pObjectiveManager);
 }
 
 void LoadObjectiveManagerOffset(GameData gamedata)
@@ -119,14 +121,15 @@ void LoadObjectiveManagerOffset(GameData gamedata)
 
 static void LoadOffset(GameData gamedata, const char[] key, int index)
 {
-    if (index <0 || index >= OFS_ObjectiveManager_Total)
-        SetFailState("Invalid iObjectiveManagerOffset index %d.", index);
+    if (index < 0 || index >= OFS_ObjectiveManager_Total)
+        g_hLogger.FatalF("Invalid iObjectiveManagerOffset index %d.", index);
 
     int offset = gamedata.GetOffset(key);
     if (offset == -1)
-        SetFailState("Failed to load offset %s.", key);
+        g_hLogger.FatalF("Failed to load offset %s.", key);
 
     iObjectiveManagerOffset[index] = offset;
+    g_hLogger.TraceF("Load %s offset %d.", key, offset);
 }
 
 void LoadObjectiveManagerSignature(GameData gamedata)
@@ -135,23 +138,29 @@ void LoadObjectiveManagerSignature(GameData gamedata)
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::CompleteCurrentObjective");
     PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::CompleteCurrentObjective.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveManager::CompleteCurrentObjective.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_ObjectiveManager::CompleteCurrentObjective.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::Clear");
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_Clear] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::Clear.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveManager::Clear.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_ObjectiveManager::Clear.");
 
     if (g_eOS == OS_Linux32 || g_eOS == OS_Linux64)
     {
         StartPrepSDKCall(SDKCall_Raw);
         PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::Finish");
         if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_Finish] = EndPrepSDKCall()) == INVALID_HANDLE)
-            SetFailState("Failed to load signature CNMRiH_ObjectiveManager::Finish.");
+            g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveManager::Finish.");
+        else
+            g_hLogger.Trace("Load signature CNMRiH_ObjectiveManager::Finish.");
     }
     else
     {
-        LogMessage("Native function CNMRiH_ObjectiveManager::Finish is unavailable.");
+        g_hLogger.Warn("Native function CNMRiH_ObjectiveManager::Finish is unavailable.");
     }
 
     StartPrepSDKCall(SDKCall_Raw);
@@ -159,107 +168,159 @@ void LoadObjectiveManagerSignature(GameData gamedata)
     PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
     PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveById] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveById.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveById.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_ObjectiveManager::GetObjectiveById.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::GetObjectiveByIndex");
     PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
     PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByIndex] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveByIndex");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveByIndex.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_ObjectiveManager::GetObjectiveByIndex.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::GetObjectiveByName");
     PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
     PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByName] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveByName.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveManager::GetObjectiveByName.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_ObjectiveManager::GetObjectiveByName.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::StartNextObjective");
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::StartNextObjective.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveManager::StartNextObjective.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_ObjectiveManager::StartNextObjective.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveManager::UpdateObjectiveBoundaries");
     if ((hObjevtiveManagerHandle[HDL_ObjectiveManager_UpdateObjectiveBoundaries] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveManager::UpdateObjectiveBoundaries.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveManager::UpdateObjectiveBoundaries.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_ObjectiveManager::UpdateObjectiveBoundaries.");
 }
 
 
 static any Native_ObjectiveManager_Instance(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.Instance called.");
+
     return g_pObjectiveManager;
 }
 
 static any Native_ObjectiveManager_Get__pObjectivesVector(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._pObjectivesVector.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return Address_Null;
+    }
 
     return UtlVector(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pObjectivesVector]);
 }
 
 static any Native_ObjectiveManager_Get__iObjectivesCount(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._iObjectivesCount.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return 0;
+    }
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iObjectivesCount], NumberType_Int32);
 }
 
 static any Native_ObjectiveManager_Get__pAntiObjectivesVector(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._pAntiObjectivesVector.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return Address_Null;
+    }
 
     return UtlVector(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pAntiObjectiveVector]);
 }
 
 static any Native_ObjectiveManager_Get__iAntiObjectivesCount(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._iAntiObjectivesCount.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return 0;
+    }
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iAntiObjectiveCount], NumberType_Int32);
 }
 
 static any Native_ObjectiveManager_Get__pObjectiveChainVector(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._pObjectiveChainVector.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return Address_Null;
+    }
 
     return UtlVector(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pObjectiveChainVector]);
 }
 
 static any Native_ObjectiveManager_Get__iObjectiveChainCount(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._iObjectiveChainCount.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return 0;
+    }
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iObjectiveChainCount], NumberType_Int32);
 }
 
 static any Native_ObjectiveManager_Get__bIsCompleted(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._bIsCompleted.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return false;
+    }
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsCompleted], NumberType_Int8);
 }
 
 static void Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._bIsCompleted.set called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return;
+    }
 
     bool value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsCompleted], value, NumberType_Int8);
@@ -267,147 +328,217 @@ static void Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numPara
 
 static any Native_ObjectiveManager_Get__bIsFailed(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._bIsFailed.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return false;
+    }
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsFailed], NumberType_Int8);
 }
 
 static void Native_ObjectiveManager_Set__bIsFailed(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._bIsFailed.set called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return;
+    }
 
     bool value = GetNativeCell(2);
+    g_hLogger.DebugF("Param value %s.", value ? "true" : "false");
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsFailed], value, NumberType_Int8);
 }
 
 static any Native_ObjectiveManager_Get__iCurrentObjectiveIndex(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._iCurrentObjectiveIndex.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return 0;
+    }
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iCurrentObjectiveIndex], NumberType_Int32);
 }
 
 static void Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._iCurrentObjectiveIndex.set called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return;
+    }
 
     int value = GetNativeCell(2);
+    g_hLogger.DebugF("Param value %d.", value);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iCurrentObjectiveIndex], value, NumberType_Int32);
 }
 
 static any Native_ObjectiveManager_Get__pCurrentObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._pCurrentObjective.get called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return Address_Null;
+    }
 
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pCurrentObjective], NumberType_Int32);
 }
 
 static void Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager._pCurrentObjective.set called.");
+
     ObjectiveManager objectiveManager = GetNativeCell(1);
     if (objectiveManager.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
+        return;
+    }
 
     Objective value = GetNativeCell(2);
+    g_hLogger.DebugF("Param value %d.", value);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pCurrentObjective], value, NumberType_Int32);
 }
 
 static void Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.CompleteCurrentObjective called.");
+
     int maxlen;
     GetNativeStringLength(1, maxlen);       // 获取传入的字符串长度
     char[] targetname = new char[++maxlen]; // 需要增加一位用于存储 '\0'
     GetNativeString(1, targetname, maxlen); // 读取传入的字符串
+    g_hLogger.DebugF("Param targetname \"%s\".", targetname);
 
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], g_pObjectiveManager, targetname);
 }
 
 static any Native_ObjectiveManager_GetCurrentObjectiveBoundary(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.GetCurrentObjectiveBoundary called.");
+
     Objective currentObjective = ObjectiveManager.GetCurrentObjective();
+    if (currentObjective.IsNull())
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "Current objective is null.");
+        return Address_Null;
+    }
+
     return currentObjective.GetObjectiveBoundary();
 }
 
 static void Native_ObjectiveManager_Clear(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.Clear called.");
+
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_Clear], g_pObjectiveManager);
 }
 
 static void Native_ObjectiveManager_Finish(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.Finish called.");
+
     if (g_eOS == OS_Linux32 || g_eOS == OS_Linux64)
     {
         SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_Finish], g_pObjectiveManager);
     }
     else
     {
-        ThrowNativeError(SP_ERROR_NOT_RUNNABLE, "ObjectiveManager::Finish() only support on linux.");
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager::Finish() only support on linux.");
     }
 }
 
 static any Native_ObjectiveManager_GetCurrentObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.GetCurrentObjective called.");
+
     // 参考自 CNMRiH_ObjectiveManager::ScriptGetObjectiveByIndex 的逆向
     ObjectiveManager objectiveManager = ObjectiveManager.Instance();
     int index = objectiveManager._iCurrentObjectiveIndex;
     int count = objectiveManager._iObjectivesCount;
     if (index < 0 || index >= count)
-        ThrowNativeError(SP_ERROR_NATIVE, "Invalid objective index (%d) [0-%d].", index, count);
+    {
+        g_hLogger.LogStackTraceF(LogLevel_Warn, "Invalid objective index (%d) [0-%d).", index, count);
+        return Address_Null;
+    }
 
     UtlVector chain = objectiveManager._pObjectivesVector;
     if (chain.IsNull())
-        ThrowNativeError(SP_ERROR_NATIVE, "ObjectiveManager._pObjectivesVector is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager._pObjectivesVector is null.");
+        return Address_Null;
+    }
 
     return chain.Get(index);
 }
 
 static any Native_ObjectiveManager_GetCurrentObjectiveIndex(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.GetCurrentObjectiveIndex called.");
+
     return ObjectiveManager.Instance()._iCurrentObjectiveIndex;
 }
 
 static any Native_ObjectiveManager_GetObjectiveById(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.GetObjectiveById called.");
+
     int id = GetNativeCell(1);
     return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveById], g_pObjectiveManager, id);
 }
 
 static any Native_ObjectiveManager_GetObjectiveByIndex(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.GetObjectiveByIndex called.");
+
     int index = GetNativeCell(1);
     return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByIndex], g_pObjectiveManager, index);
 }
 
 static any Native_ObjectiveManager_GetObjectiveByName(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.GetObjectiveByName called.");
+
     int maxlen;
     GetNativeStringLength(1, maxlen); // 获取传入的字符串长度
     char[] name = new char[++maxlen]; // 需要增加一位用于存储 '\0'
     GetNativeString(1, name, maxlen);
+    g_hLogger.DebugF("Param name \"%s\".", name);
 
     return SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_GetObjectiveByName], g_pObjectiveManager, name);
 }
 
 static any Native_ObjectiveManager_GetObjectiveChain(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.GetObjectiveChain called.");
+
     UtlVector objectiveChainVector = ObjectiveManager.Instance()._pObjectiveChainVector;
     if (objectiveChainVector.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveManager._pObjectivesVector is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager.objectiveChainVector is null.");
+        return INVALID_HANDLE;
+    }
 
     int objectiveChainCount = objectiveChainVector.size;
     ArrayList objectiveChain = new ArrayList();
 
-    for (int i=0; i < objectiveChainCount; ++i)
+    for (int i = 0; i < objectiveChainCount; ++i)
     {
         int id = objectiveChainVector.Get(i);
         Objective objectiveById = ObjectiveManager.GetObjectiveById(id);
@@ -421,35 +552,49 @@ static any Native_ObjectiveManager_GetObjectiveChain(Handle plugin, int numParam
 
 static any Native_ObjectiveManager_GetObjectiveChainCount(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.GetObjectiveChainCount called.");
+
     return ObjectiveManager.Instance()._iObjectiveChainCount;
 }
 
 static any Native_ObjectiveManager_GetObjectiveCount(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.GetObjectiveCount called.");
+
     return ObjectiveManager.Instance()._iObjectivesCount;
 }
 
 static any Native_ObjectiveManager_IsCompleted(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.IsCompleted called.");
+
     return ObjectiveManager.Instance()._bIsCompleted;
 }
 
 static any Native_ObjectiveManager_IsFailed(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.IsFailed called.");
+
     return ObjectiveManager.Instance()._bIsFailed;
 }
 
 static void Native_ObjectiveManager_StartNextObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.StartNextObjective called.");
+
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective], g_pObjectiveManager);
 }
 
 static void Native_ObjectiveManager_UpdateObjectiveBoundaries(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.UpdateObjectiveBoundaries called.");
+
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_UpdateObjectiveBoundaries], g_pObjectiveManager);
 }
 
 static void Native_ObjectiveManager_FailCurrentObjective(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveManager.FailCurrentObjective called.");
+
     ObjectiveManager.Instance()._bIsFailed = true;
 }

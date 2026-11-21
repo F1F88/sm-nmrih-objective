@@ -95,8 +95,7 @@ methodmap Objective < AddressBase
      * Gets the entity name by its index.
      *
      * @param index     Index in the entity names (starting from 0).
-     * @return          Entity name.
-     * @error           Invalid index.
+     * @return          Entity name or Address_Null.
      */
     public native Stringt GetEntity(int index);
 
@@ -124,8 +123,7 @@ methodmap Objective < AddressBase
      * For example, a link can indicate that an objective must be completed before another one can start, or that an objective is optional, etc.
      *
      * @param index     Index in the link ids (starting from 0).
-     * @return          The id of the link.
-     * @error           Invalid index.
+     * @return          The id of the link, or -1 if there is no such link.
      */
     public native int GetLink(int index);
 

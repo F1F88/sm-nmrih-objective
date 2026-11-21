@@ -22,29 +22,43 @@ void LoadObjectiveBoundarySignature(GameData gamedata)
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveBoundary::Start");
     if ((hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Start] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveBoundary::Start.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveBoundary::Start.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_ObjectiveBoundary::Start.");
 
     StartPrepSDKCall(SDKCall_Raw);
     PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CNMRiH_ObjectiveBoundary::Finish");
     if ((hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Finish] = EndPrepSDKCall()) == INVALID_HANDLE)
-        SetFailState("Failed to load signature CNMRiH_ObjectiveBoundary::Finish.");
+        g_hLogger.Fatal("Failed to load signature CNMRiH_ObjectiveBoundary::Finish.");
+    else
+        g_hLogger.Trace("Load signature CNMRiH_ObjectiveBoundary::Finish.");
 }
 
 
 static void Native_ObjectiveBoundary_Start(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveBoundary.Start called.");
+
     ObjectiveBoundary objectiveBoundary = GetNativeCell(1);
     if (objectiveBoundary.IsNull())
-        ThrowNativeError(SP_ERROR_PARAM, "ObjectiveBoundary instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveBoundary instance is null.");
+        return;
+    }
 
     SDKCall(hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Start], objectiveBoundary.addr);
 }
 
 static void Native_ObjectiveBoundary_Finish(Handle plugin, int numParams)
 {
+    g_hLogger.Debug("ObjectiveBoundary.Finish called.");
+
     ObjectiveBoundary objectiveBoundary = GetNativeCell(1);
     if (objectiveBoundary.IsNull())
-        ThrowNativeError(SP_ERROR_INVALID_ADDRESS, "ObjectiveBoundary instance is null.");
+    {
+        g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveBoundary instance is null.");
+        return;
+    }
 
     SDKCall(hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Finish], objectiveBoundary.addr);
 }

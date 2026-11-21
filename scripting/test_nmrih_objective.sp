@@ -1,10 +1,29 @@
 #pragma newdecls required
 #pragma semicolon 1
+#pragma dynamic 32768
+
+#if !defined DEBUG
+    #define  DEBUG
+#endif
+
+#if !defined _DEBUG
+    #define  _DEBUG
+#endif
+
+#if defined NDEBUG
+    #undef  NDEBUG
+#endif
 
 #include <sdktools>
+#include <sourcemod>
+
 #include <vscript_proxy>
-#include <utl_vector>
 #include <nmrih_objective>
+
+#include <log4sp>
+
+// #define ASSERT_QUIET
+#include <assert>
 
 #define PLUGIN_NAME                         "ObjectiveManager Proxy Test"
 #define PLUGIN_DESCRIPTION                  "ObjectiveManager Proxy Test"
@@ -20,479 +39,374 @@ public Plugin myinfo =
 };
 
 
+Logger g_hLogger;
 
 public void OnPluginStart()
 {
-    RegConsoleCmd("to", CMD_Objective);
-    // RegConsoleCmd("tob1", CMD_ObjectiveBoundary_Start);
-    RegConsoleCmd("tob2", CMD_ObjectiveBoundary_Finish);
-    RegConsoleCmd("tom1", CMD_Manager_Info);
-    RegConsoleCmd("tom2", CMD_Manager_CompleteCurrentObjective);
-    RegConsoleCmd("tom3", CMD_Manager_StartNextObjective);
-    RegConsoleCmd("tom4", CMD_Fix);
-    RegConsoleCmd("tom5", CMD_Test);
+    char filename[PLATFORM_MAX_PATH];
+    BuildPath(Path_SM, filename, sizeof(filename), "logs/test/nmrih_objective.log");
+
+    g_hLogger = new Logger();
+    g_hLogger.AddSinkAndClose(new BasicFileSink(filename, true));
+    g_hLogger.AddSinkAndClose(new ServerConsoleSink());
+    g_hLogger.SetLevel(LogLevel_Trace);
+    g_hLogger.SetFlushLevel(LogLevel_Trace);
+    g_hLogger.SetThrowLevel(LogLevel_Error);
+
+    RegConsoleCmd("sm_test_obj_mgr_1",  CMD_ObjMgr_CompleteCurrentObjective);
+    RegConsoleCmd("sm_test_obj_mgr_2",  CMD_ObjMgr_Clear);
+    RegConsoleCmd("sm_test_obj_mgr_3",  CMD_ObjMgr_Finish);
+    RegConsoleCmd("sm_test_obj_mgr_4",  CMD_ObjMgr_StartNextObjective);
+    RegConsoleCmd("sm_test_obj_mgr_5",  CMD_ObjMgr_UpdateObjectiveBoundaries);
+    RegConsoleCmd("sm_test_obj_mgr_6",  CMD_ObjMgr_FailCurrentObjective);
+    RegConsoleCmd("sm_test_obj_1",      CMD_Obj_UpdateBoundary);
+    RegConsoleCmd("sm_test_obj_bdy_1",  CMD_Obj_Bdy_Start);
+    RegConsoleCmd("sm_test_obj_bdy_2",  CMD_Obj_Bdy_Finish);
+
+    g_hLogger.Info("[SM] " ... PLUGIN_NAME ... " (" ... PLUGIN_VERSION ... ") initialize complete!");
 }
 
-
-Action CMD_Objective(int client, int params)
+Action CMD_ObjMgr_CompleteCurrentObjective(int client, int params)
 {
-    PrintToServer("========== CMD_Objective Start ==========");
-    int count = ObjectiveManager.Instance().GetObjectiveCount();
-    for (int index=0; index < count; ++index)
-    {
-        Objective objective = ObjectiveManager.Instance().GetObjectiveByIndex(index);
-        PrintToServer("------- %d/%d Objective Address=%d -------", index, count, objective);
-        if (!objective)
-            continue;
+    g_hLogger.Trace("========== CMD_ObjMgr_CompleteCurrentObjective Start ==========");
 
-        int id, entityCount, linkCount;
-        char name[256], desc[256], boundaryName[256], buffer1[512], buffer2[512];
-        UtlVector entitysVector, linksVector;
-        bool isAntiObjective;
-        ObjectiveBoundary objectiveBoundary;
-
-        PrintToServer("--- propertys ---");
-
-        id = objective.m_iId;
-        objective._sName.ToCharArray(name, sizeof(name));
-        objective._sDescription.ToCharArray(desc, sizeof(desc));
-
-        entitysVector = objective._pEntitysVector;
-        entityCount = objective._iEntitysCount;
-        FormatEx(buffer1, sizeof(buffer1), "_pEntitysVector %d |", entityCount);
-        for (int i=0; i<entityCount; ++i)
-            FormatEx(buffer1, sizeof(buffer1), "%s %d=%d |", buffer1, i, entitysVector.Get(i));
-
-        linksVector = objective._pLinksVector;
-        linkCount = objective._iLinksCount;
-        FormatEx(buffer2, sizeof(buffer2), "_pLinksVector %d |", linkCount);
-        for (int i=0; i<linkCount; ++i)
-            FormatEx(buffer2, sizeof(buffer2), "%s %d=%d |", buffer2, i, linksVector.Get(i));
-
-        isAntiObjective = objective._bIsAntiObjective;
-        objective._sObjectiveBoundaryName.ToCharArray(boundaryName, sizeof(boundaryName));
-
-        PrintToServer("m_iId=%d | _sName=%s | _sDescription=%s | _bIsAntiObjective=%s | _sObjectiveBoundaryName=%s |"
-            , id, name, desc, isAntiObjective ? "ture" : "false", boundaryName);
-
-        PrintToServer(buffer1);
-
-        PrintToServer(buffer2);
-
-
-        PrintToServer("--- functions ---");
-
-        id = objective.GetId();
-        objective.GetName(name, sizeof(name));
-        objective.GetDescription(desc, sizeof(desc));
-
-        entityCount = objective.GetEntityCount();
-        FormatEx(buffer1, sizeof(buffer1), "GetEntity %d |", entityCount);
-        for (int i=0; i<entityCount; ++i)
-            FormatEx(buffer1, sizeof(buffer1), "%s %d=%d |", buffer1, i, objective.GetEntity(i));
-
-        linkCount = objective.GetLinkCount();
-        FormatEx(buffer2, sizeof(buffer2), "GetLink %d |", linkCount);
-        for (int i=0; i<linkCount; ++i)
-            FormatEx(buffer2, sizeof(buffer2), "%s %d=%d |", buffer2, i, objective.GetLink(i));
-
-        bool isEndObjective = objective.IsEndObjective();
-        isAntiObjective = objective.IsEndObjective();
-        objective.GetObjectiveBoundaryName(boundaryName, sizeof(boundaryName));
-        objectiveBoundary = objective.GetObjectiveBoundary();
-
-        PrintToServer("GetId=%d | GetName=%s | GetDescription=%s | IsEndObjective=%s | IsAntiObjective=%s | GetObjectiveBoundaryName=%s | GetObjectiveBoundary=0x%x |"
-            , id, name, desc, isEndObjective ? "ture" : "false", isAntiObjective ? "ture" : "false", boundaryName, objectiveBoundary);
-
-        PrintToServer(buffer1);
-
-        PrintToServer(buffer2);
-    }
-    PrintToServer("========== CMD_Objective End ==========");
-    return Plugin_Handled;
-}
-
-// Action CMD_ObjectiveBoundary_Start(int client, int param)
-// {
-//     PrintToServer("========== CMD_ObjectiveBoundary_Start Start ==========");
-
-//     int index = param ? GetCmdArgInt(1) : ObjectiveManager.Instance().GetCurrentObjectiveIndex();
-//     Objective objective = ObjectiveManager.Instance().GetObjectiveByIndex(index);
-//     ObjectiveBoundary objectiveBoundary = objective.GetObjectiveBoundary();
-
-//     PrintToServer("objective index=%d | objective=0x%x | objective id=%d | objectiveBoundary=0x%x |"
-//         , index, objective, objective.GetId(), objectiveBoundary);
-//     objectiveBoundary.Start();
-
-//     PrintToServer("========== CMD_ObjectiveBoundary_Start End ==========");
-//     return Plugin_Handled;
-// }
-
-Action CMD_ObjectiveBoundary_Finish(int client, int param)
-{
-    PrintToServer("========== CMD_ObjectiveBoundary_Finish Start ==========");
-
-    ObjectiveManager objectiveManager = ObjectiveManager.Instance();
-    int index = param ? GetCmdArgInt(1) : objectiveManager.GetCurrentObjectiveIndex();
-    Objective objective = objectiveManager.GetObjectiveByIndex(index);
-    ObjectiveBoundary objectiveBoundary = objective.GetObjectiveBoundary();
-
-    PrintToServer("objectiveManager=0x%x | objective index=%d | objective=0x%x | objective id=%d | objectiveBoundary=0x%x |"
-        , objectiveManager, index, objective, objective.GetId(), objectiveBoundary);
-    objectiveBoundary.Finish();
-
-    PrintToServer("========== CMD_ObjectiveBoundary_Finish End ==========");
-    return Plugin_Handled;
-}
-
-Action CMD_Manager_Info(int client, int params)
-{
-    PrintToServer("========== CMD_Manager_Info Start ==========");
-
-    ObjectiveManager objectiveManager = ObjectiveManager.Instance();
-    PrintToServer("------- ObjectiveManager Address=%d -------", objectiveManager);
-    if (!objectiveManager)
-        return Plugin_Handled;
-
-    UtlVector objectivesVector, objectiveChainVector;
-    int objectivesCount, objectiveChainCount, currentObjectiveIndex;
-    bool isCompleted, isFailed;
-    char currentObjectiveBoundaryName[256], buffer1[512], buffer2[512];
-    Objective currentObjective;
-
-    PrintToServer("--- propertys ---");
-
-    objectivesVector = objectiveManager._pObjectivesVector;
-    objectivesCount = objectiveManager._iObjectivesCount;
-    FormatEx(buffer1, sizeof(buffer1), "_pObjectivesVector %d |", objectivesCount);
-    for (int i=0; i<objectivesCount; ++i)
-        FormatEx(buffer1, sizeof(buffer1), "%s %d=%d |", buffer1, i, objectivesVector.Get(i));
-
-    objectiveChainVector = objectiveManager._pObjectiveChainVector;
-    objectiveChainCount = objectiveManager._iObjectiveChainCount;
-    FormatEx(buffer2, sizeof(buffer2), "_pObjectiveChainVector %d |", objectiveChainCount);
-    for (int i=0; i<objectiveChainCount; ++i)
-        FormatEx(buffer2, sizeof(buffer2), "%s %d=%d |", buffer2, i, objectiveChainVector.Get(i));
-
-    isCompleted = objectiveManager._bIsCompleted;
-    isFailed = objectiveManager._bIsFailed;
-    currentObjectiveIndex = objectiveManager._iCurrentObjectiveIndex;
-    objectiveManager._sCurrentObjectiveBoundary.ToCharArray(currentObjectiveBoundaryName, sizeof(currentObjectiveBoundaryName));
-    currentObjective = objectiveManager._pCurrentObjective;
-
-    PrintToServer("_bIsCompleted=%s | _bIsFailed=%s | _iCurrentObjectiveIndex=%d | _sCurrentObjectiveBoundary=%s | _pCurrentObjective=0x%x |",
-        isCompleted ? "ture" : "false", isFailed ? "ture" : "false", currentObjectiveIndex, currentObjectiveBoundaryName, currentObjective);
-
-    PrintToServer(buffer1);
-
-    PrintToServer(buffer2);
-
-
-    PrintToServer("--- functions ---");
-
-    objectiveManager.GetCurrentObjectiveBoundary(currentObjectiveBoundaryName, sizeof(currentObjectiveBoundaryName));
-    currentObjectiveIndex = objectiveManager.GetCurrentObjectiveIndex();
-
-    PrintToServer("GetCurrentObjectiveBoundary=%s | GetCurrentObjectiveIndex=%d |", currentObjectiveBoundaryName, currentObjectiveIndex);
-
-    int index = 1;
-    Objective objectByIndex = objectiveManager.GetObjectiveByIndex(index);
-    int idByIndex = objectByIndex.GetId();
-    char nameByIndex[256];
-    objectByIndex.GetName(nameByIndex, sizeof(nameByIndex));
-    PrintToServer("GetObjectiveByIndex(%d) = %d | id=%d | name=%s", index, objectByIndex, idByIndex, nameByIndex);
-
-    Objective objectById = objectiveManager.GetObjectiveById(idByIndex);
-    int idById = objectById.GetId();
-    char nameById[256];
-    objectByIndex.GetName(nameById, sizeof(nameById));
-    PrintToServer("GetObjectiveById(%d) = %x | id=%d | name=%s", idByIndex, objectById, idById, nameById);
-
-    Objective objectByName = objectiveManager.GetObjectiveByName(nameByIndex);
-    int idByName = objectByName.GetId();
-    char nameByName[256];
-    objectByName.GetName(nameByName, sizeof(nameByName));
-    PrintToServer("GetObjectiveByName(\"%s\") = %x | id=%d | name=%s", nameByIndex, objectByName, idByName, nameByName);
-
-    objectiveChainCount = objectiveManager.GetObjectiveChainCount();
-    PrintToServer("GetObjectiveChainCount=%d", objectiveChainCount);
-
-    ArrayList objectiveChain = new ArrayList();
-    objectiveManager.GetObjectiveChain(objectiveChain);
-    for (int i=0; i<objectiveChain.Length; i++)
-    {
-        Objective objectByChain = objectiveChain.Get(i);
-        int idByChain = objectByChain.GetId();
-        char nameByChain[256];
-        objectByChain.GetName(nameByChain, sizeof(nameByChain));
-        PrintToServer("i=%d | value=%d | id=%d | name=%s", i, objectByChain, idByChain, nameByChain);
-    }
-
-    int objectiveCount = objectiveManager.GetObjectiveCount();
-    PrintToServer("GetObjectiveCount() = %d", objectiveCount);
-
-    isCompleted = objectiveManager.IsCompleted();
-    PrintToServer("IsCompleted() = %d", isCompleted ? "true" : "false");
-
-    isFailed = objectiveManager.IsFailed();
-    PrintToServer("IsFailed() = %s", isFailed ? "true" : "false");
-
-    PrintToServer("========== CMD_Manager_Info End ==========");
-    return Plugin_Handled;
-}
-
-Action CMD_Manager_CompleteCurrentObjective(int client, int params)
-{
-    PrintToServer("========== CMD_Manager_CompleteCurrentObjective Start ==========");
+    ObjectiveManager objMgr = ObjectiveManager.Instance();
+    g_hLogger.Debug(ObjectiveManagerToString(objMgr));
 
     char targetname[256];
     if (params)
         GetCmdArg(1, targetname, sizeof(targetname));
 
-    PrintToServer("targetname=\"%s\"", targetname);
+    g_hLogger.DebugF("targetname=\"%s\"", targetname);
 
-    ObjectiveManager.Instance().CompleteCurrentObjective(targetname);
+    ObjectiveManager.CompleteCurrentObjective(targetname);
 
-    PrintToServer("========== CMD_Manager_CompleteCurrentObjective End ==========");
+    g_hLogger.Trace("========== CMD_ObjMgr_CompleteCurrentObjective End ==========");
     return Plugin_Handled;
 }
 
-Action CMD_Manager_StartNextObjective(int client, int params)
+Action CMD_ObjMgr_Clear(int client, int params)
 {
-    PrintToServer("========== CMD_Manager_StartNextObjective Start ==========");
+    g_hLogger.Trace("========== CMD_ObjMgr_Clear Start ==========");
 
-    ObjectiveManager.Instance().StartNextObjective();
+    ObjectiveManager objMgr = ObjectiveManager.Instance();
+    g_hLogger.Debug(ObjectiveManagerToString(objMgr));
 
-    PrintToServer("========== CMD_Manager_StartNextObjective End ==========");
+    ObjectiveManager.Clear();
+
+    g_hLogger.Trace("========== CMD_ObjMgr_Clear End ==========");
     return Plugin_Handled;
 }
 
-// https://github.com/dysphie/nmo-guard/issues/9
-Action CMD_Fix(int client, int param)
+Action CMD_ObjMgr_Finish(int client, int params)
 {
-    PrintToServer("========== CMD_Fix Start ==========");
+    g_hLogger.Trace("========== CMD_ObjMgr_Finish Start ==========");
 
-    ObjectiveManager objectiveManager = ObjectiveManager.Instance();
-    int index = param ? GetCmdArgInt(1) : objectiveManager.GetCurrentObjectiveIndex();
-    Objective objective = objectiveManager.GetObjectiveByIndex(index);
-    ObjectiveBoundary objectiveBoundary = objective.GetObjectiveBoundary();
+    ObjectiveManager objMgr = ObjectiveManager.Instance();
+    g_hLogger.Debug(ObjectiveManagerToString(objMgr));
 
-    PrintToServer("objectiveManager=0x%x | objective index=%d | objective=0x%x | objective id=%d | objectiveBoundary=0x%x |"
-        , objectiveManager, index, objective, objective.GetId(), objectiveBoundary);
+    ObjectiveManager.Finish();
 
-    if (objectiveBoundary)
-        objectiveBoundary.Finish();
-
-    objectiveManager._iCurrentObjectiveIndex++;
-    objectiveManager.StartNextObjective();
-
-    PrintToServer("========== CMD_Fix End ==========");
+    g_hLogger.Trace("========== CMD_ObjMgr_Finish End ==========");
     return Plugin_Handled;
 }
 
-Action CMD_Fix2(int client, int param)
+Action CMD_ObjMgr_StartNextObjective(int client, int params)
 {
-    PrintToServer("========== CMD_Fix2 Start ==========");
+    g_hLogger.Trace("========== StartNextObjective Start ==========");
 
-    ObjectiveManager objectiveManager = ObjectiveManager.Instance();
+    ObjectiveManager objMgr = ObjectiveManager.Instance();
+    g_hLogger.Debug(ObjectiveManagerToString(objMgr));
 
-    int objectiveBoundaryEntity = LoadFromAddress(objectiveManager.addr + 0x7C, NumberType_Int32) & 0xFFF;
-    if (!IsValidEntity(objectiveBoundaryEntity))
-        return Plugin_Handled;
+    ObjectiveManager.StartNextObjective();
 
-    ObjectiveBoundary objectiveBoundary = LoadFromAddress(GetEntityAddress(objectiveBoundaryEntity) + 0x4, NumberType_Int32);
-
-    if (objectiveBoundary)
-        objectiveBoundary.Finish();
-
-    objectiveManager._iCurrentObjectiveIndex++;
-    objectiveManager.StartNextObjective();
-
-    PrintToServer("========== CMD_Fix2 End ==========");
+    g_hLogger.Trace("========== StartNextObjective End ==========");
     return Plugin_Handled;
 }
 
-Action CMD_Test(int client, int param)
+Action CMD_ObjMgr_UpdateObjectiveBoundaries(int client, int params)
 {
-    PrintToServer("========== CMD_Test Start ==========");
+    g_hLogger.Trace("========== UpdateObjectiveBoundaries Start ==========");
 
-    ObjectiveManager objectiveManager = ObjectiveManager.Instance();
-    ObjectiveBoundary boundary = objectiveManager._pCurrentObjective.GetObjectiveBoundary();
+    ObjectiveManager objMgr = ObjectiveManager.Instance();
+    g_hLogger.Debug(ObjectiveManagerToString(objMgr));
 
-    any boundary124 = LoadFromAddress(objectiveManager.addr + 124, NumberType_Int32);
-    int entity = boundary124 & 0xFFF;
+    ObjectiveManager.UpdateObjectiveBoundaries();
 
-    PrintToServer("boundary.addr = %u | boundary124 = %u | boundary124 & 0xFFF = %u | boundary124 >> 12 = %u"
-        , boundary.addr, boundary124, entity, boundary124 >> 12);
-
-    PrintToServer("entity=%u | entity ref=%u | entity addr=%u", entity, EntIndexToEntRef(entity), GetEntityAddress(entity));
-
-    PrintToServer("========== CMD_Test End ==========");
-
+    g_hLogger.Trace("========== UpdateObjectiveBoundaries End ==========");
     return Plugin_Handled;
 }
 
-// Action CMD_Test2(int client, int param)
-// {
-//     PrintToServer("========== CMD_Test2 Start ==========");
+Action CMD_ObjMgr_FailCurrentObjective(int client, int params)
+{
+    g_hLogger.Trace("========== FailCurrentObjective Start ==========");
 
-//     // int entityIndex = GetCmdArgInt(1);
-//     int entityIndex = param;
+    ObjectiveManager objMgr = ObjectiveManager.Instance();
+    g_hLogger.Debug(ObjectiveManagerToString(objMgr));
 
-//     GameData gamedata  = new GameData("nmrih_objective.games");
-//     if (!gamedata)
-//         ThrowError("Couldn't find nmrih_objective.games gamedata");
+    ObjectiveManager.FailCurrentObjective();
 
+    g_hLogger.Trace("========== FailCurrentObjective End ==========");
+    return Plugin_Handled;
+}
 
-//     Address g_pEntityList = gamedata.GetAddress("g_pEntityList");
-//     if (!g_pEntityList)
-//         ThrowError("Failed to load address g_pEntityList");
+Action CMD_Obj_UpdateBoundary(int client, int params)
+{
+    g_hLogger.Trace("========== CMD_Obj_Current Start ==========");
 
-//     PrintToServer("g_pEntityList = %u | entityIndex = %u |", g_pEntityList, entityIndex);
+    Objective objective = ObjectiveManager.GetCurrentObjective();
+    g_hLogger.Debug(ObjectiveToString(objective));
 
-//     Address entity = LoadFromAddress(g_pEntityList + entityIndex * 16, NumberType_Int32);
-//     int ent4 = LoadFromAddress(g_pEntityList + entityIndex * 16 + 4, NumberType_Int32);
-//     int ent8 = LoadFromAddress(g_pEntityList + entityIndex * 16 + 8, NumberType_Int32);
+    objective.UpdateBoundary();
 
-//     PrintToServer("entity=%u | +4 = %d | +8 = %d |", entity, ent4, ent8);
+    g_hLogger.Trace("========== CMD_Obj_Current End ==========");
+    return Plugin_Handled;
+}
 
-//     PrintToServer("========== CMD_Test2 End ==========");
-//     return Plugin_Handled;
-// }
+Action CMD_Obj_Bdy_Start(int client, int params)
+{
+    g_hLogger.Trace("========== CMD_ObjBoundary_Start Start ==========");
 
-// {
-//     ObjectiveManager objectiveManager = ObjectiveManager.Instance();
+    ObjectiveBoundary objectiveBoundary = ObjectiveManager.GetCurrentObjective().GetObjectiveBoundary();
+    g_hLogger.Debug(ObjectiveBoundaryToString(objectiveBoundary));
 
-//     int currentBoundaryRef = LoadFromAddress(objectiveManager.addr + 124, NumberType_Int32);
-//     int currentBoundaryEntity = currentBoundaryRef & 0xFFF;
-//     int checkNumber = currentBoundaryRef >> 12;
+    objectiveBoundary.Start();
 
-//     Address currentBoundaryEntityAddr = GetEntityAddress(currentBoundaryEntity);
-//     Address currentBoundaryAddr = LoadFromAddress(currentBoundaryEntityAddr + 4, NumberType_Int32);
-//     int checkNumber2 = LoadFromAddress(currentBoundaryEntityAddr + 8, NumberType_Int32);
-// }
+    g_hLogger.Trace("========== CMD_ObjBoundary_Start End ==========");
+    return Plugin_Handled;
+}
 
-// script ObjectiveManager.CompleteCurrentObjective("")
-// script printl(ObjectiveManager.GetObjectiveByIndex(6))
-// script printl(ObjectiveManager.GetObjectiveByIndex(5).GetId())
-// script printl(ObjectiveManager.GetObjectiveById(1723505))
-// script printl(ObjectiveManager.GetObjectiveById(1723505).GetId())
-// script printl(ObjectiveManager.GetObjectiveById(34).GetName())
+Action CMD_Obj_Bdy_Finish(int client, int params)
+{
+    g_hLogger.Trace("========== CMD_ObjBoundary_Finish Start ==========");
 
-// ! Bug 永远只返回第一个任务
-// script printl("CurrentObjectiveIndex = "+ObjectiveManager.GetCurrentObjectiveIndex())
-// script printl("CurrentObjectiveBoundary = " + ObjectiveManager.GetCurrentObjectiveBoundary())
+    ObjectiveBoundary objectiveBoundary = ObjectiveManager.GetCurrentObjective().GetObjectiveBoundary();
+    g_hLogger.Debug(ObjectiveBoundaryToString(objectiveBoundary));
 
-// script printl("do CompleteCurrentObjective(\"\")")
-// script ObjectiveManager.CompleteCurrentObjective("")
+    objectiveBoundary.Finish();
 
-// script printl("CurrentObjectiveIndex = "+ObjectiveManager.GetCurrentObjectiveIndex())
-// script printl("CurrentObjectiveBoundary = " + ObjectiveManager.GetCurrentObjectiveBoundary())
-
-// script ObjectiveManager.GetObjectiveById()
-
-// script local arr = [1, 2, 3]; printl(arr);
-// script printl([1, 2, 3])
-// script "local arr; ObjectiveManager.GetObjectiveChain(arr); printl(arr)"
-
-
-// printl("Hello My Test nut");
-// local chain = [1, 2, 3];
-// printl(chain);
-// ObjectiveManager.GetObjectiveChain(array);
-// printl(chain);
-// foreach (i in chain) {
-//     printl(i);
-// }
-
-// script_execute test.nut
+    g_hLogger.Trace("========== CMD_ObjBoundary_Finish End ==========");
+    return Plugin_Handled;
+}
 
 
 
+stock char[] ObjectiveToString(Objective objective)
+{
+    SetTestContext("Objective");
 
-// Action CMD_Test(int client, int params)
-// {
-//     PrintToServer("===== CMD_Test Start =====");
+    AssertEq("m_iId == GetId()", objective.m_iId, objective.GetId());
 
-//     NMRObjectiveManager objectiveManager = NMRObjectiveManager.Instance();
-//     PrintToServer("Get global singleton ObjectiveManager object = 0x%x", objectiveManager);
+    {
+        char buf1[256], buf2[256];
+        objective._sName.ToCharArray(buf1, sizeof(buf1));
+        objective.GetName(buf2, sizeof(buf2));
+        AssertStrEq("_sName == GetName()", buf1, buf2);
+    }
 
-//     // CompleteCurrentObjective
+    {
+        char buf1[256], buf2[256];
+        objective._sDescription.ToCharArray(buf1, sizeof(buf1));
+        objective.GetDescription(buf2, sizeof(buf2));
+        AssertStrEq("_sDescription == GetDescription()", buf1, buf2);
+    }
 
-//     char buffer[256];
-//     objectiveManager.GetCurrentObjectiveBoundary(buffer, sizeof(buffer));
-//     PrintToServer("GetCurrentObjectiveBoundary(buffer, sizeof(buffer)) = '%s'", buffer);
+    {
+        char buf1[256], buf2[256];
+        objective._sObjectiveBoundaryName.ToCharArray(buf1, sizeof(buf1));
+        objective.GetObjectiveBoundaryName(buf2, sizeof(buf2));
+        AssertStrEq("_sObjectiveBoundaryName == GetObjectiveBoundaryName()", buf1, buf2);
+    }
 
-//     int index = objectiveManager.GetCurrentObjectiveIndex();
-//     PrintToServer("GetCurrentObjectiveIndex() = %d", index);
+    UtlVector/* <Stringt> */ entitysVector = objective._pEntitysVector;
+    ArrayList/* <Stringt> */ entityList    = objective.GetEntityList();
 
-//     NMRObjective objectByIndex = objectiveManager.GetObjectiveByIndex(index);
-//     PrintToServer("GetObjectiveByIndex(%d) = %d", index, objectByIndex);
+    AssertEq("entitysVector.size == _iEntitysCount",    entitysVector.size, objective._iEntitysCount);
+    AssertEq("entitysVector.size == GetEntityCount",    entitysVector.size, objective.GetEntityCount());
+    AssertEq("entitysVector.size == entityList.Length", entitysVector.size, entityList.Length);
 
-//     NMRObjective objectById = objectiveManager.GetObjectiveById(objectByIndex.GetId());
-//     PrintToServer("GetObjectiveById(%d) = %x", objectByIndex.GetId(), objectById);
+    for (int i = 0; i < entitysVector.size; ++i)
+    {
+        AssertEq("entitysVector.Get(i) == entityList.Get(i)", entitysVector.Get(i), entityList.Get(i));
+        AssertEq("entitysVector.Get(i) == GetEntity(i)",      entitysVector.Get(i), objective.GetEntity(i));
 
-//     objectById.GetName(buffer, sizeof(buffer));
-//     NMRObjective objectByName = objectiveManager.GetObjectiveByName(buffer);
-//     PrintToServer("GetObjectiveByName(\"%s\") = %x", buffer, objectByName);
+        {
+            char buf1[256], buf2[256], buf3[256];
+            view_as<Stringt>(entitysVector.Get(i)).ToCharArray(buf1, sizeof(buf1));
+            view_as<Stringt>(entityList.Get(i)).ToCharArray(buf2, sizeof(buf2));
+            view_as<Stringt>(objective.GetEntity(i)).ToCharArray(buf3, sizeof(buf3));
 
-//     int objectiveCount = objectiveManager.GetObjectiveCount();
-//     PrintToServer("GetObjectiveCount() = %d", objectiveCount);
+            AssertStrEq("entitysVector.Get(i) == entityList.Get(i)", buf1, buf2);
+            AssertStrEq("entitysVector.Get(i) == GetEntity.Get(i)", buf1, buf3);
+        }
 
-//     int objectiveChainLength = objectiveManager.GetObjectiveChainLength();
-//     PrintToServer("GetObjectiveChainLength=%d", objectiveChainLength);
+        AssertTrue("ContainsEntity", objective.ContainsEntity(entitysVector.Get(i)));
+    }
+    delete entityList;
 
-//     // GetObjectiveChain
-//     ArrayList objectiveChain = objectiveManager.GetObjectiveChain();
-//     PrintToServer("objectiveChain=%d | objectiveChain.Length=%d", objectiveChain, objectiveChain.Length);
-//     for(int i=0; i<objectiveChain.Length; ++i)
-//     {
-//         NMRObjective objectByChain = objectiveChain.Get(i);
-//         int id = objectByChain.GetId();
-//         bool isEndObjective = objectByChain.IsEndObjective();
-//         bool isAntiObjective = objectByChain.IsAntiObjective();
-//         NMRObjectiveBoundary objectiveBoundary = objectByChain.GetObjectiveBoundary();
+    UtlVector/* <int> */ linksVector = objective._pLinksVector;
+    AssertEq("linksVector.size == _iLinksCount", linksVector.size, objective._iLinksCount);
+    AssertEq("linksVector.size == GetLinkCount", linksVector.size, objective.GetLinkCount());
 
-//         PrintToServer("objectByChain-A: i = %d | addr = 0x%x | id = %d | isEndObjective = %d | isAntiObjective = %d | objectiveBoundary = 0x%x"
-//             , i, objectByChain.addr, id, isEndObjective, isAntiObjective, objectiveBoundary
-//         );
+    for (int i = 0; i < linksVector.size; ++i)
+    {
+        AssertEq("linksVector.Get(i) == GetLink(i)", linksVector.Get(i), objective.GetLink(i));
+        AssertTrue("HasLink", objective.HasLink(linksVector.Get(i)));
+    }
 
-//         char name[256], description[256], objectiveBoundaryName[256];
-//         objectByChain.GetName(name, sizeof(name));
-//         objectByChain.GetDescription(description, sizeof(description));
-//         objectByChain.GetObjectiveBoundaryName(objectiveBoundaryName, sizeof(objectiveBoundaryName));
+    char buffer[4096];
+    FormatEx(
+        buffer, sizeof(buffer),
+        "Objective{\n\taddr=%d,\n\tIsNull=%s,\n\tm_iId=%d,\n\t_sName=%s,\n\t_sDescription=%s,\n\t_pEntitysVector=%s,\n\t_iEntitysCount=%d,\n\t_pLinksVector=%s,\n\t_iLinksCount=%d,\n\t_bIsAntiObjective=%s,\n\t_sObjectiveBoundaryName=%s,\n\tIsEndObjective=%s,\n\tIsAntiObjective=%s,\n\tGetObjectiveBoundary=%s\n}",
+        objective.addr,
+        objective.IsNull() ? "true" : "false",
+        objective.m_iId,
+        StringtToString(objective._sName),
+        StringtToString(objective._sDescription),
+        UtlVectorToString(objective._pEntitysVector),
+        objective._iEntitysCount,
+        UtlVectorToString(objective._pLinksVector),
+        objective._iLinksCount,
+        objective._bIsAntiObjective ? "true" : "false",
+        StringtToString(objective._sObjectiveBoundaryName),
+        objective.IsEndObjective() ? "true" : "false",
+        objective.IsAntiObjective() ? "true" : "false",
+        ObjectiveBoundaryToString(objective.GetObjectiveBoundary())
+    );
+    return buffer;
+}
 
-//         PrintToServer("objectByChain-B: i = %d | name = %s | description = %s | objectiveBoundaryName = %s |"
-//             , i, name, description, objectiveBoundaryName
-//         );
-//     }
-//     delete objectiveChain;
+stock char[] ObjectiveBoundaryToString(ObjectiveBoundary objectiveBoundary)
+{
+    char buffer[256];
+    FormatEx(
+        buffer, sizeof(buffer),
+        "ObjectiveBoundary{this=%d,addr=%d,IsNull=%s}",
+        objectiveBoundary,
+        objectiveBoundary.addr,
+        objectiveBoundary.IsNull() ? "true" : "false"
+    );
+    return buffer;
+}
 
-//     // GetId
-//     // GetName
-//     // GetDescription
-//     // IsEndObjective
-//     // IsAntiObjective
-//     // GetObjectiveBoundaryName
-//     // GetObjectiveBoundary
+stock char[] ObjectiveManagerToString(ObjectiveManager objMgr)
+{
+    SetTestContext("ObjectiveManager");
 
-//     // Start
-//     // Finish
+    UtlVector/* <Objective> */ objectivesVector   = objMgr._pObjectivesVector;
+    ArrayList/* <Objective> */ objectiveChainList = ObjectiveManager.GetObjectiveChain();
 
-//     PrintToServer("IsCompleted()=%d", objectiveManager.IsCompleted());
+    AssertEq("objectivesVector.size == _iObjectivesCount",           objectivesVector.size, objMgr._iObjectivesCount);
+    AssertEq("objectivesVector.size == GetObjectiveCount",           objectivesVector.size, ObjectiveManager.GetObjectiveCount());
+    AssertEq("objectivesVector.size == objectiveChainList.Length",   objectivesVector.size, objectiveChainList.Length);
 
-//     PrintToServer("IsFailed()=%d", objectiveManager.IsFailed());
+    UtlVector/* <int> */ objectiveChainVector = objMgr._pObjectiveChainVector;
+    AssertEq("objectiveChainVector.size == _iObjectiveChainCount",   objectiveChainVector.size, objMgr._iObjectiveChainCount);
+    AssertEq("objectiveChainVector.size == GetObjectiveChainCount",  objectiveChainVector.size, ObjectiveManager.GetObjectiveChainCount());
 
-//     UtlVector objectList = UtlVector(objectiveManager.addr + 20);
-//     // PrintToServer("objectList=%d ", objectList);
-//     PrintToServer("objectList=%d | size=%d | GetObjectiveCount=%d", objectList, objectList.size, objectiveManager.GetObjectiveCount());
-//     for(int i=0; i<objectList.size && objectiveManager.GetObjectiveCount(); ++i)
-//     {
-//         PrintToServer("i=%d | value=%d", i, objectList.Get(i));
-//     }
+    for (int i = 0; i < objectivesVector.size; ++i)
+    {
+        AssertEq("objectivesVector.Get(i) == objectiveChainList.Get(i)", objectivesVector.Get(i), objectiveChainList.Get(i));
+        AssertEq("objectivesVector.Get(i) == GetObjectiveByIndex(i)",    objectivesVector.Get(i), ObjectiveManager.GetObjectiveByIndex(i));
 
-//     // StartNextObjective
+        Objective obj = objectivesVector.Get(i);
+        int id = obj.GetId();
+        AssertEq("objectivesVector.Get(i).GetId() == objectiveChainVector.Get(i)", id, objectiveChainVector.Get(i));
 
-//     PrintToServer("===== CMD_Test End =====\n");
-//     return Plugin_Handled;
-// }
+        AssertEq("objectivesVector.Get(i) == GetObjectiveById(id)",      objectivesVector.Get(i), ObjectiveManager.GetObjectiveById(id));
+        AssertEq("objectivesVector.Get(i) == GetObjectiveById(id)",      objectivesVector.Get(i), ObjectiveManager.GetObjectiveById(id));
+
+        char name[512];
+        obj.GetName(name, sizeof(name));
+        AssertEq("objectivesVector.Get(i) == GetObjectiveByName(name)",  objectivesVector.Get(i), ObjectiveManager.GetObjectiveByName(name));
+    }
+    delete objectiveChainList;
+
+    {
+        AssertEq("_bIsFailed == IsFailed", objMgr._bIsFailed, ObjectiveManager.IsFailed());
+        AssertEq("_bIsFailed == IsFailed", objMgr._bIsCompleted, ObjectiveManager.IsCompleted());
+    }
+
+    {
+        int index = objMgr._iCurrentObjectiveIndex;
+        AssertEq("_iCurrentObjectiveIndex == GetCurrentObjectiveIndex", index, ObjectiveManager.GetCurrentObjectiveIndex());
+        AssertEq("objectivesVector.Get(index) == _pCurrentObjective", objectivesVector.Get(index), objMgr._pCurrentObjective);
+        AssertEq("objectivesVector.Get(index) == GetCurrentObjective", objectivesVector.Get(index), ObjectiveManager.GetCurrentObjective());
+    }
+
+    UtlVector/* <Objective> */ antiObjectivesVector = objMgr._pAntiObjectivesVector;
+    for (int i = 0; i < antiObjectivesVector.size; ++i)
+    {
+        Objective obj = antiObjectivesVector.Get(i);
+        AssertTrue("antiObjectivesVector.Get(i) IsAntiObjective", obj.IsAntiObjective());
+    }
+
+    char buffer[8192];
+    FormatEx(
+        buffer, sizeof(buffer),
+        "ObjectiveManager{\n\taddr=%d,\n\tIsNull=%s,\n\t_pObjectivesVector=%s,\n\t_iObjectivesCount=%d,\n\t_pAntiObjectivesVector=%s,\n\t_iAntiObjectivesCount=%d,\n\t_pObjectiveChainVector=%s,\n\t_iObjectiveChainCount=%d,\n\t_bIsCompleted=%s,\n\t_bIsFailed=%s,\n\t_iCurrentObjectiveIndex=%d,\n\t_pCurrentObjective=%s,\n\tGetCurrentObjectiveBoundary=%s\n}",
+        objMgr.addr,
+        objMgr.IsNull() ? "true" : "false",
+        UtlVectorToString(objMgr._pObjectivesVector),
+        objMgr._iObjectivesCount,
+        UtlVectorToString(objMgr._pAntiObjectivesVector),
+        objMgr._iAntiObjectivesCount,
+        UtlVectorToString(objMgr._pObjectiveChainVector),
+        objMgr._iObjectiveChainCount,
+        objMgr._bIsCompleted ? "true" : "false",
+        objMgr._bIsFailed ? "true" : "false",
+        objMgr._iCurrentObjectiveIndex,
+        ObjectiveToString(objMgr._pCurrentObjective),
+        ObjectiveBoundaryToString(ObjectiveManager.GetCurrentObjectiveBoundary())
+    );
+    return buffer;
+}
+
+stock char[] StringtToString(Stringt stringt)
+{
+    char buffer[1024];
+    stringt.ToCharArray(buffer, sizeof(buffer));
+    Format(
+        buffer, sizeof(buffer),
+        "Stringt{addr=%d,IsNull=%s,str=%s}",
+        stringt.addr,
+        stringt.IsNull() ? "true" : "false",
+        buffer
+    );
+    return buffer;
+}
+
+stock char[] UtlVectorToString(UtlVector vector)
+{
+    char buffer[1024];
+    FormatEx(buffer, sizeof(buffer), "[");
+    for (int i = 0; i < vector.size; ++i)
+    {
+        if (i == 0)
+            Format(buffer, sizeof(buffer), "%s%d", buffer, vector.Get(i));
+        else
+            Format(buffer, sizeof(buffer), "%s,%d", buffer, vector.Get(i));
+    }
+    StrCat(buffer, sizeof(buffer), "]");
+
+    Format(
+        buffer, sizeof(buffer),
+        "UtlVector{addr=%d,IsNull=%s,size=%d,elements=%s}",
+        vector.addr,
+        vector.IsNull() ? "true" : "false",
+        vector.size,
+        buffer
+    );
+    return buffer;
+}
+
+
+public void ASSERT_OPTION_ON_PASS(int counter, const char[] suite, const char[] name, const char[] msg)
+{
+    g_hLogger.InfoF("[%2u] [ OK ] [%s] %s%s%s.", counter, suite, name, (name[0] ? " " : ""), msg);
+}
+
+public void ASSERT_OPTION_ON_FAIL(int counter, const char[] suite, const char[] name, const char[] msg)
+{
+    g_hLogger.LogStackTraceF(LogLevel_Fatal, "[%2u] [FAIL] [%s] %s%s%s.", counter, suite, name, (name[0] ? " " : ""), msg);
+}
