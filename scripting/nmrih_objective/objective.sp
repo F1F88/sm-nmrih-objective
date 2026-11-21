@@ -137,7 +137,7 @@ static any Native_Objective_Get_m_iId(Handle plugin, int numParams)
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective_m_iId], NumberType_Int32);
 }
 
-static void Native_Objective_Set_m_iId(Handle plugin, int numParams)
+static any Native_Objective_Set_m_iId(Handle plugin, int numParams)
 {
     g_hLogger.Debug("Objective.m_iId.set called.");
 
@@ -145,12 +145,13 @@ static void Native_Objective_Set_m_iId(Handle plugin, int numParams)
     if (objective.IsNull())
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
-        return;
+        return 0;
     }
 
     int value = GetNativeCell(2);
     g_hLogger.DebugF("Param value %d.", value);
     StoreToAddress(objective.addr + iObjectiveOffset[OFS_Objective_m_iId], value, NumberType_Int32);
+    return 0;
 }
 
 static any Native_Objective_Get__sName(Handle plugin, int numParams)
@@ -251,7 +252,7 @@ static any Native_Objective_Get__bIsAntiObjective(Handle plugin, int numParams)
     return LoadFromAddress(objective.addr + iObjectiveOffset[OFS_Objective__bIsAntiObjective], NumberType_Int8);
 }
 
-static void Native_Objective_Set__bIsAntiObjective(Handle plugin, int numParams)
+static any Native_Objective_Set__bIsAntiObjective(Handle plugin, int numParams)
 {
     g_hLogger.Debug("Objective._bIsAntiObjective.set called.");
 
@@ -259,12 +260,13 @@ static void Native_Objective_Set__bIsAntiObjective(Handle plugin, int numParams)
     if (objective.IsNull())
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
-        return;
+        return 0;
     }
 
     bool value = GetNativeCell(2);
     g_hLogger.DebugF("Param value %s.", value ? "true" : "false");
     StoreToAddress(objective.addr + iObjectiveOffset[OFS_Objective__bIsAntiObjective], value, NumberType_Int8);
+    return 0;
 }
 
 static any Native_Objective_Get__sObjectiveBoundaryName(Handle plugin, int numParams)
@@ -647,7 +649,7 @@ static any Native_Objective_GetObjectiveBoundary(Handle plugin, int numParams)
     return objectiveBoundary;
 }
 
-static void Native_Objective_UpdateBoundary(Handle plugin, int numParams)
+static any Native_Objective_UpdateBoundary(Handle plugin, int numParams)
 {
     g_hLogger.Debug("Objective.UpdateBoundary called.");
 
@@ -655,8 +657,9 @@ static void Native_Objective_UpdateBoundary(Handle plugin, int numParams)
     if (objective.IsNull())
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "Objective is null.");
-        return;
+        return 0;
     }
 
     SDKCall(hObjevtiveHandle[HDL_Objective_UpdateBoundary], objective.addr);
+    return 0;
 }

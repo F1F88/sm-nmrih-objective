@@ -311,7 +311,7 @@ static any Native_ObjectiveManager_Get__bIsCompleted(Handle plugin, int numParam
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsCompleted], NumberType_Int8);
 }
 
-static void Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numParams)
+static any Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager._bIsCompleted.set called.");
 
@@ -319,11 +319,12 @@ static void Native_ObjectiveManager_Set__bIsCompleted(Handle plugin, int numPara
     if (objectiveManager.IsNull())
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
-        return;
+        return 0;
     }
 
     bool value = GetNativeCell(2);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsCompleted], value, NumberType_Int8);
+    return 0;
 }
 
 static any Native_ObjectiveManager_Get__bIsFailed(Handle plugin, int numParams)
@@ -340,7 +341,7 @@ static any Native_ObjectiveManager_Get__bIsFailed(Handle plugin, int numParams)
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsFailed], NumberType_Int8);
 }
 
-static void Native_ObjectiveManager_Set__bIsFailed(Handle plugin, int numParams)
+static any Native_ObjectiveManager_Set__bIsFailed(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager._bIsFailed.set called.");
 
@@ -348,12 +349,13 @@ static void Native_ObjectiveManager_Set__bIsFailed(Handle plugin, int numParams)
     if (objectiveManager.IsNull())
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
-        return;
+        return 0;
     }
 
     bool value = GetNativeCell(2);
     g_hLogger.DebugF("Param value %s.", value ? "true" : "false");
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__bIsFailed], value, NumberType_Int8);
+    return 0;
 }
 
 static any Native_ObjectiveManager_Get__iCurrentObjectiveIndex(Handle plugin, int numParams)
@@ -370,7 +372,7 @@ static any Native_ObjectiveManager_Get__iCurrentObjectiveIndex(Handle plugin, in
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iCurrentObjectiveIndex], NumberType_Int32);
 }
 
-static void Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, int numParams)
+static any Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager._iCurrentObjectiveIndex.set called.");
 
@@ -378,12 +380,13 @@ static void Native_ObjectiveManager_Set__iCurrentObjectiveIndex(Handle plugin, i
     if (objectiveManager.IsNull())
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
-        return;
+        return 0;
     }
 
     int value = GetNativeCell(2);
     g_hLogger.DebugF("Param value %d.", value);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__iCurrentObjectiveIndex], value, NumberType_Int32);
+    return 0;
 }
 
 static any Native_ObjectiveManager_Get__pCurrentObjective(Handle plugin, int numParams)
@@ -400,7 +403,7 @@ static any Native_ObjectiveManager_Get__pCurrentObjective(Handle plugin, int num
     return LoadFromAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pCurrentObjective], NumberType_Int32);
 }
 
-static void Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int numParams)
+static any Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager._pCurrentObjective.set called.");
 
@@ -408,15 +411,16 @@ static void Native_ObjectiveManager_Set__pCurrentObjective(Handle plugin, int nu
     if (objectiveManager.IsNull())
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager instance is null.");
-        return;
+        return 0;
     }
 
     Objective value = GetNativeCell(2);
     g_hLogger.DebugF("Param value %d.", value);
     StoreToAddress(objectiveManager.addr + iObjectiveManagerOffset[OFS_ObjectiveManager__pCurrentObjective], value, NumberType_Int32);
+    return 0;
 }
 
-static void Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int numParams)
+static any Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager.CompleteCurrentObjective called.");
 
@@ -427,6 +431,7 @@ static void Native_ObjectiveManager_CompleteCurrentObjective(Handle plugin, int 
     g_hLogger.DebugF("Param targetname \"%s\".", targetname);
 
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_CompleteCurrentObjective], g_pObjectiveManager, targetname);
+    return 0;
 }
 
 static any Native_ObjectiveManager_GetCurrentObjectiveBoundary(Handle plugin, int numParams)
@@ -443,24 +448,27 @@ static any Native_ObjectiveManager_GetCurrentObjectiveBoundary(Handle plugin, in
     return currentObjective.GetObjectiveBoundary();
 }
 
-static void Native_ObjectiveManager_Clear(Handle plugin, int numParams)
+static any Native_ObjectiveManager_Clear(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager.Clear called.");
 
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_Clear], g_pObjectiveManager);
+    return 0;
 }
 
-static void Native_ObjectiveManager_Finish(Handle plugin, int numParams)
+static any Native_ObjectiveManager_Finish(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager.Finish called.");
 
     if (g_eOS == OS_Linux32 || g_eOS == OS_Linux64)
     {
         SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_Finish], g_pObjectiveManager);
+        return 0;
     }
     else
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveManager::Finish() only support on linux.");
+        return 0;
     }
 }
 
@@ -578,23 +586,26 @@ static any Native_ObjectiveManager_IsFailed(Handle plugin, int numParams)
     return ObjectiveManager.Instance()._bIsFailed;
 }
 
-static void Native_ObjectiveManager_StartNextObjective(Handle plugin, int numParams)
+static any Native_ObjectiveManager_StartNextObjective(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager.StartNextObjective called.");
 
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_StartNextObjective], g_pObjectiveManager);
+    return 0;
 }
 
-static void Native_ObjectiveManager_UpdateObjectiveBoundaries(Handle plugin, int numParams)
+static any Native_ObjectiveManager_UpdateObjectiveBoundaries(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager.UpdateObjectiveBoundaries called.");
 
     SDKCall(hObjevtiveManagerHandle[HDL_ObjectiveManager_UpdateObjectiveBoundaries], g_pObjectiveManager);
+    return 0;
 }
 
-static void Native_ObjectiveManager_FailCurrentObjective(Handle plugin, int numParams)
+static any Native_ObjectiveManager_FailCurrentObjective(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveManager.FailCurrentObjective called.");
 
     ObjectiveManager.Instance()._bIsFailed = true;
+    return 0;
 }

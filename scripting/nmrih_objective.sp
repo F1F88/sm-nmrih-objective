@@ -19,7 +19,7 @@
  */
 #define PLUGIN_NAME        "Library NMRiH Objective"
 #define PLUGIN_DESCRIPTION "Library NMRiH Objective"
-#define PLUGIN_VERSION     "2.2.0"
+#define PLUGIN_VERSION     "3.0.0"
 #define LOGGER_NAME        "lib-objective"
 
 public Plugin myinfo =

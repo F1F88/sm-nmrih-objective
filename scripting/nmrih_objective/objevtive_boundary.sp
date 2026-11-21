@@ -35,7 +35,7 @@ void LoadObjectiveBoundarySignature(GameData gamedata)
 }
 
 
-static void Native_ObjectiveBoundary_Start(Handle plugin, int numParams)
+static any Native_ObjectiveBoundary_Start(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveBoundary.Start called.");
 
@@ -43,13 +43,14 @@ static void Native_ObjectiveBoundary_Start(Handle plugin, int numParams)
     if (objectiveBoundary.IsNull())
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveBoundary instance is null.");
-        return;
+        return 0;
     }
 
     SDKCall(hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Start], objectiveBoundary.addr);
+    return 0;
 }
 
-static void Native_ObjectiveBoundary_Finish(Handle plugin, int numParams)
+static any Native_ObjectiveBoundary_Finish(Handle plugin, int numParams)
 {
     g_hLogger.Debug("ObjectiveBoundary.Finish called.");
 
@@ -57,8 +58,9 @@ static void Native_ObjectiveBoundary_Finish(Handle plugin, int numParams)
     if (objectiveBoundary.IsNull())
     {
         g_hLogger.LogStackTrace(LogLevel_Warn, "ObjectiveBoundary instance is null.");
-        return;
+        return 0;
     }
 
     SDKCall(hObjectiveBoundaryHandle[HDL_ObjectiveBoundary_Finish], objectiveBoundary.addr);
+    return 0;
 }

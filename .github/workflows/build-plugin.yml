@@ -25,11 +25,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sm_version: [sm_1_13, sm_1_12, sm_1_11]
+        sm_version: [sm_1_12, sm_1_11]
         variant: [extension, header_only]
         include:
-          - sm_version: sm_1_13
-            sm_ref: "1.13.x"
           - sm_version: sm_1_12
             sm_ref: "1.12.x"
           - sm_version: sm_1_11
