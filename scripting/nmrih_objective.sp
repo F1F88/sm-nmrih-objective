@@ -95,7 +95,7 @@ public void OnPluginStart()
     /* ------- Register Libray ------- */
     RegPluginLibrary("nmrih_objective");
 
-    PrintToServer("[SM] " ... PLUGIN_NAME ... " (" ... PLUGIN_VERSION ... ") initialize complete!");
+    g_hLogger.Info("[SM] " ... PLUGIN_NAME ... " (" ... PLUGIN_VERSION ... ") initialize complete!");
 }
 
 public void OnAllPluginsLoaded()
